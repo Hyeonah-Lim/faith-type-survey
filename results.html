@@ -15,7 +15,7 @@
     }
     h1 { text-align: center; color: #2c3e50; }
     #result-box {
-      max-width: 800px;
+      max-width: 900px;
       margin: 20px auto;
       background: white;
       border-radius: 20px;
@@ -35,9 +35,10 @@
     #saveBtn { background: #50c878; }
     #saveBtn:hover { background: #3da96a; }
 
-    /* 슬라이더 스타일 */
-    .axis { display: flex; align-items: center; margin: 16px 0; }
-    .left, .right { width: 30px; text-align: center; font-weight: bold; }
+    .axis-wrapper { display: flex; align-items: center; margin: 16px 0; }
+    .category { width: 140px; font-weight: bold; font-size: 14px; text-align: right; padding-right: 10px; }
+    .axis { display: flex; align-items: center; flex: 1; }
+    .left, .right { width: 80px; text-align: center; font-weight: bold; font-size: 13px; }
     .bar {
       position: relative; flex: 1; height: 10px;
       background: #ddd; margin: 0 10px; border-radius: 5px;
@@ -45,7 +46,7 @@
     .indicator {
       position: absolute; top: -5px;
       width: 16px; height: 16px;
-      background: #4a90e2; border-radius: 50%;
+      border-radius: 50%;
       transform: translateX(-50%);
     }
     .score { width: 50px; text-align: left; font-weight: bold; }
@@ -126,29 +127,37 @@
       `;
       document.getElementById('result').innerHTML = resultHtml;
 
-      const labels = [
-        ["R", "S"],
-        ["E", "W"],
-        ["D", "P"],
-        ["O", "F"]
+      const categoryInfo = [
+        { category: "공동체 참여성향", left: "R (교제형)", right: "S (묵상형)" },
+        { category: "신앙 표현방식", left: "E (체험형)", right: "W (말씀형)" },
+        { category: "하나님 인식방식", left: "D (관계중심형)", right: "P (원칙중심형)" },
+        { category: "신앙생활 패턴", left: "O (정돈형)", right: "F (유연형)" }
       ];
 
+      const colors = ["#4a90e2", "#50c878", "#ffb347", "#ff6666"];
+
       const slidersContainer = document.getElementById('sliders');
-      labels.forEach((pair, index) => {
+      categoryInfo.forEach((info, index) => {
         const score = scores[index];
         const percent = (score / 20) * 100;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'axis-wrapper';
 
         const axis = document.createElement('div');
         axis.className = 'axis';
         axis.innerHTML = `
-          <span class="left">${pair[0]}</span>
-          <div class="bar">
-            <div class="indicator" style="left:${percent}%;"></div>
+          <span class="left">${info.left}</span>
+          <div class="bar" style="background:${colors[index]}33;">
+            <div class="indicator" style="left:${percent}%; background:${colors[index]};"></div>
           </div>
-          <span class="right">${pair[1]}</span>
+          <span class="right">${info.right}</span>
           <span class="score">${score}점</span>
         `;
-        slidersContainer.appendChild(axis);
+
+        wrapper.innerHTML = `<div class="category">${info.category}</div>`;
+        wrapper.appendChild(axis);
+        slidersContainer.appendChild(wrapper);
       });
     }
 
