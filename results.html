@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>검사 결과</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     body {
@@ -27,30 +26,59 @@
     #nickname { text-align: center; font-size: 1.3rem; font-weight: bold; color: #2c3e50; margin-bottom: 5px; }
     #catchphrase { text-align: center; font-style: italic; margin-bottom: 20px; color: #666; }
     #description { text-align: center; margin-bottom: 30px; color: #444; }
-    canvas { margin: 0 auto; display: block; max-width: 100%; height: auto !important; }
     a, button {
-      display: block; text-align: center; margin: 20px auto 0; text-decoration: none; color: #fff;
-      background: #4a90e2; padding: 10px 20px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer;
+      display: block; text-align: center; margin: 20px auto 0;
+      text-decoration: none; color: #fff; background: #4a90e2;
+      padding: 10px 20px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer;
     }
     a:hover, button:hover { background: #357abd; }
     #saveBtn { background: #50c878; }
     #saveBtn:hover { background: #3da96a; }
+
+    /* 슬라이더 스타일 */
+    .axis { display: flex; align-items: center; margin: 16px 0; }
+    .left, .right { width: 30px; text-align: center; font-weight: bold; }
+    .bar {
+      position: relative; flex: 1; height: 10px;
+      background: #ddd; margin: 0 10px; border-radius: 5px;
+    }
+    .indicator {
+      position: absolute; top: -5px;
+      width: 16px; height: 16px;
+      background: #4a90e2; border-radius: 50%;
+      transform: translateX(-50%);
+    }
+    .score { width: 50px; text-align: left; font-weight: bold; }
   </style>
 </head>
 <body>
   <h1>검사 결과</h1>
   <div id="result-box">
     <div id="result"></div>
-    <div style="position: relative; height: 320px;">
-      <canvas id="scoreChart"></canvas>
-    </div>
+    <div id="sliders"></div>
   </div>
   <button id="saveBtn">결과 이미지로 저장</button>
   <a href="index.html">다시 검사하기</a>
 
   <script>
-    // --- typeData는 기존 그대로 ---
-    const typeData = [/* 16개 유형 데이터 */];
+    const typeData = [
+      { type: "R-E-D-O", nickname: "함께하는 마음 정원사", catchphrase: "사랑으로 계획하며 나누자", description: "체계적인 계획으로 공동체와 하나님의 사랑을 깊이 나누는 따뜻한 리더" },
+      { type: "R-E-D-F", nickname: "자유로운 사랑 전도사", catchphrase: "마음이 이끄는 대로 사랑하자", description: "즉흥적이고 유연하게 공동체 안에서 하나님의 사랑을 전하는 자유로운 영혼" },
+      { type: "R-E-P-O", nickname: "체계적인 감동 건축가", catchphrase: "질서로 감동을 설계하자", description: "계획적으로 공동체의 영적 체험을 조직하며 하나님의 원칙을 실천하는 기획자" },
+      { type: "R-E-P-F", nickname: "순간의 영감 나눔이", catchphrase: "지금 이 순간, 진리를 느끼자", description: "유연하게 공동체와 함께 하나님의 진리를 체험하며 순간의 영감을 나누는 활동가" },
+      { type: "R-W-D-O", nickname: "말씀으로 세우는 목자", catchphrase: "체계적 말씀으로 사랑 나누기", description: "계획적으로 말씀을 연구하고 공동체에 하나님의 친밀함을 체계적으로 전하는 교사" },
+      { type: "R-W-D-F", nickname: "유연한 말씀 동행자", catchphrase: "말씀과 함께 자유롭게 걷기", description: "자유롭게 말씀을 나누며 공동체와 함께 하나님과의 친밀한 관계를 추구하는 동반자" },
+      { type: "R-W-P-O", nickname: "원칙 세우는 말씀 디자이너", catchphrase: "말씀과 질서로 세우기", description: "말씀과 원칙을 기반으로 공동체를 계획적으로 세워 나가는 사람" },
+      { type: "R-W-P-F", nickname: "자유로운 말씀 탐험가", catchphrase: "말씀과 함께 자유를", description: "자유로운 분위기 속에서 말씀과 원칙을 함께 나누는 탐험가" },
+      { type: "S-E-D-O", nickname: "고요한 사랑 수도자", catchphrase: "묵상 속에서 사랑을 계획하기", description: "체계적인 개인 묵상을 통해 하나님과의 친밀한 관계를 깊이 체험하는 영성가" },
+      { type: "S-E-D-F", nickname: "자유로운 사랑 탐색자", catchphrase: "마음이 흐르는 대로 묵상", description: "자유롭게 개인 묵상을 즐기며 하나님과의 친밀한 동행을 추구하는 사람" },
+      { type: "S-E-P-O", nickname: "원칙 중심 영성 설계자", catchphrase: "묵상으로 세우는 삶", description: "개인 묵상과 체험 속에서 하나님의 원칙을 질서 있게 세우는 사람" },
+      { type: "S-E-P-F", nickname: "자유로운 진리 탐험가", catchphrase: "혼자서 진리를 자유롭게 탐험", description: "유연한 개인 영성으로 하나님의 원칙을 체험적으로 발견해가는 영적 모험가" },
+      { type: "S-W-D-O", nickname: "말씀 연구하는 친구", catchphrase: "체계적 말씀으로 친밀함 추구", description: "계획적인 개인 말씀 연구를 통해 하나님과의 깊은 우정을 쌓아가는 학자" },
+      { type: "S-W-D-F", nickname: "말씀과 동행하는 순례자", catchphrase: "자유로운 말씀의 여정", description: "자유로운 방식으로 말씀을 묵상하며 하나님과 함께 동행하는 순례자" },
+      { type: "S-W-P-O", nickname: "말씀 원칙 설계자", catchphrase: "말씀으로 질서를 세우다", description: "말씀 중심으로 삶을 계획하고 하나님의 원칙을 따라가는 설계자" },
+      { type: "S-W-P-F", nickname: "진리 속 자유 순례자", catchphrase: "말씀 안에서 자유롭게 순례", description: "유연한 개인 말씀 묵상으로 하나님의 진리 원칙을 자유롭게 탐구하는 순례자" }
+    ];
 
     const params = new URLSearchParams(window.location.search);
     const scoresParam = params.get("scores");
@@ -59,7 +87,6 @@
       document.getElementById('result').innerHTML = "<p>결과 데이터를 찾을 수 없습니다.</p>";
     } else {
       const scores = scoresParam.split(",").map(Number);
-      const adjustedScores = scores.map(s => s - 13);  // 13점을 0으로 맞춤
 
       const types = [];
       types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
@@ -97,52 +124,31 @@
         <div id="catchphrase">${typeInfo ? typeInfo.catchphrase : ""}</div>
         <div id="description">${typeInfo ? typeInfo.description : ""}</div>
       `;
-
       document.getElementById('result').innerHTML = resultHtml;
 
-      const ctx = document.getElementById('scoreChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ["R ↔ S", "E ↔ W", "D ↔ P", "O ↔ F"],
-          datasets: [{
-            label: '편차',
-            data: adjustedScores,
-            backgroundColor: ['#4a90e2','#50c878','#ffb347','#ff6666']
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (context) => {
-                  const diff = context.raw;
-                  const score = diff + 13;
-                  const direction = score >= 13 ? "왼쪽 성향" : "오른쪽 성향";
-                  return `${score}점 (${direction})`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              min: -8,
-              max: 7,
-              grid: { color: '#ddd' },
-              ticks: {
-                callback: function(value) {
-                  if (value === -8) return "";
-                  if (value === 7) return "";
-                  return value;
-                }
-              }
-            }
-          }
-        }
+      const labels = [
+        ["R", "S"],
+        ["E", "W"],
+        ["D", "P"],
+        ["O", "F"]
+      ];
+
+      const slidersContainer = document.getElementById('sliders');
+      labels.forEach((pair, index) => {
+        const score = scores[index];
+        const percent = (score / 20) * 100;
+
+        const axis = document.createElement('div');
+        axis.className = 'axis';
+        axis.innerHTML = `
+          <span class="left">${pair[0]}</span>
+          <div class="bar">
+            <div class="indicator" style="left:${percent}%;"></div>
+          </div>
+          <span class="right">${pair[1]}</span>
+          <span class="score">${score}점</span>
+        `;
+        slidersContainer.appendChild(axis);
       });
     }
 
