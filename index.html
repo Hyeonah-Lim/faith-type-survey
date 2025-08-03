@@ -48,25 +48,12 @@
     button:hover {
       background: #357abd;
     }
-    #result {
-      margin-top: 30px;
-      padding: 20px;
-      border-radius: 10px;
-      background: #e8f0fe;
-      border: 1px solid #ccd9ff;
-    }
-    #result h2 {
-      margin-top: 0;
-      color: #2c3e50;
-    }
   </style>
 </head>
 <body>
   <h1>청년부 신앙유형 검사</h1>
   <form id="quizForm"></form>
   <button type="button" onclick="calculateResult()">제출</button>
-
-  <div id="result"></div>
 
   <script>
     const questions = [
@@ -98,7 +85,7 @@
 
     const form = document.getElementById('quizForm');
 
-    // 설문 문항 동적 생성
+    // 문항 생성
     questions.forEach((q, index) => {
       const div = document.createElement('div');
       div.classList.add('question');
@@ -112,17 +99,7 @@
       form.appendChild(div);
     });
 
-    // 닉네임 생성 함수
-    function getNickname(typeCode) {
-      const [c, e, h, p] = typeCode.split("-");
-      let nickname = "";
-      nickname += (c === "R") ? "따뜻한 " : "깊이있는 ";
-      nickname += (e === "E") ? "체험가 " : "사색가 ";
-      nickname += (h === "D") ? "동행자" : "원칙가";
-      nickname += (p === "O") ? " (계획형)" : " (자유형)";
-      return nickname;
-    }
-
+    // 결과 페이지로 이동
     function calculateResult() {
       let scores = Array(4).fill(0);
       for (let i = 0; i < 20; i++) {
@@ -135,38 +112,9 @@
         scores[group] += parseInt(val.value);
       }
 
-      const types = [];
-      types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
-      types[1] = scores[1] >= 13 ? "E형(체험형)" : "W형(말씀형)";
-      types[2] = scores[2] >= 13 ? "D형(관계중심형)" : "P형(원칙중심형)";
-      types[3] = scores[3] >= 13 ? "O형(정돈형)" : "F형(유연형)";
-
-      const descriptions = {
-        "R": "사람들과 함께하는 것을 즐기고, 공동체 안에서 신앙을 키우는 스타일.",
-        "S": "혼자서 깊이 묵상하고 개인적인 만남을 선호하는 스타일.",
-        "E": "느낌과 체험을 중시하며 신앙을 생생하게 경험하는 스타일.",
-        "W": "말씀과 이성을 중심으로 차분하게 접근하는 스타일.",
-        "D": "하나님을 친밀한 아버지, 친구로 여기는 스타일.",
-        "P": "하나님의 법과 기준을 중시하는 스타일.",
-        "O": "계획적이고 체계적인 신앙생활을 선호하는 스타일.",
-        "F": "자유롭고 융통성 있는 신앙생활을 선호하는 스타일."
-      };
-
-      const finalType = types.map(t => t[0]).join("-");
-      const nickname = getNickname(finalType);
-
-      let resultHtml = `
-        <h2>결과</h2>
-        <p>공동체 참여성향: ${scores[0]}점 → ${types[0]}<br><em>${descriptions[types[0][0]]}</em></p>
-        <p>신앙 표현방식: ${scores[1]}점 → ${types[1]}<br><em>${descriptions[types[1][0]]}</em></p>
-        <p>하나님 인식방식: ${scores[2]}점 → ${types[2]}<br><em>${descriptions[types[2][0]]}</em></p>
-        <p>신앙생활 패턴: ${scores[3]}점 → ${types[3]}<br><em>${descriptions[types[3][0]]}</em></p>
-        <hr>
-        <p><strong>최종 유형: ${finalType}</strong><br>
-        <em>${nickname}</em></p>
-      `;
-
-      document.getElementById('result').innerHTML = resultHtml;
+      // 점수를 URL 파라미터로 전달
+      const query = scores.join(",");
+      window.location.href = `results.html?scores=${query}`;
     }
   </script>
 </body>
