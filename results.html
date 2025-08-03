@@ -51,6 +51,8 @@
     canvas {
       margin: 0 auto;
       display: block;
+      max-width: 100%;
+      height: auto !important;
     }
     a {
       display: block;
@@ -71,12 +73,13 @@
   <h1>검사 결과</h1>
   <div id="result-box">
     <div id="result"></div>
-    <canvas id="scoreChart" width="400" height="300"></canvas>
+    <div style="position: relative; height: 300px;">
+      <canvas id="scoreChart"></canvas>
+    </div>
   </div>
   <a href="index.html">다시 검사하기</a>
 
   <script>
-    // 16개 전체 유형 데이터
     const typeData = [
       { type: "R-E-D-O", nickname: "함께하는 마음 정원사", catchphrase: "사랑으로 계획하며 나누자", description: "체계적인 계획으로 공동체와 하나님의 사랑을 깊이 나누는 따뜻한 리더" },
       { type: "R-E-D-F", nickname: "자유로운 사랑 전도사", catchphrase: "마음이 이끄는 대로 사랑하자", description: "즉흥적이고 유연하게 공동체 안에서 하나님의 사랑을 전하는 자유로운 영혼" },
@@ -104,29 +107,16 @@
     } else {
       const scores = scoresParam.split(",").map(Number);
 
-      // 4개 축 유형
       const types = [];
       types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
       types[1] = scores[1] >= 13 ? "E형(체험형)" : "W형(말씀형)";
       types[2] = scores[2] >= 13 ? "D형(관계중심형)" : "P형(원칙중심형)";
       types[3] = scores[3] >= 13 ? "O형(정돈형)" : "F형(유연형)";
 
-      const descriptions = {
-        "R": "사람들과 함께하는 것을 즐기고, 공동체 안에서 신앙을 키우는 스타일.",
-        "S": "혼자서 깊이 묵상하고 개인적인 만남을 선호하는 스타일.",
-        "E": "느낌과 체험을 중시하며 신앙을 생생하게 경험하는 스타일.",
-        "W": "말씀과 이성을 중심으로 차분하게 접근하는 스타일.",
-        "D": "하나님을 친밀한 아버지, 친구로 여기는 스타일.",
-        "P": "하나님의 법과 기준을 중시하는 스타일.",
-        "O": "계획적이고 체계적인 신앙생활을 선호하는 스타일.",
-        "F": "자유롭고 융통성 있는 신앙생활을 선호하는 스타일."
-      };
-
       const shortCodes = [types[0][0], types[1][0], types[2][0], types[3][0]];
       const finalType = shortCodes.join("-");
       const typeInfo = typeData.find(item => item.type === finalType);
 
-      // 결과 텍스트
       let resultHtml = `
         <h2>최종 유형: ${finalType}</h2>
         <div id="nickname">${typeInfo ? typeInfo.nickname : ""}</div>
@@ -136,7 +126,6 @@
 
       document.getElementById('result').innerHTML = resultHtml;
 
-      // Chart.js로 그래프 그리기
       const ctx = document.getElementById('scoreChart').getContext('2d');
       new Chart(ctx, {
         type: 'bar',
@@ -151,6 +140,7 @@
         options: {
           indexAxis: 'y',
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             tooltip: { enabled: true }
