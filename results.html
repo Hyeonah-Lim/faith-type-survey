@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>검사 결과</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    #result {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #e8f0fe;
+      border: 1px solid #ccd9ff;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #fff;
+      background: #4a90e2;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+    a:hover {
+      background: #357abd;
+    }
+  </style>
+</head>
+<body>
+  <h1>검사 결과</h1>
+  <div id="result"></div>
+  <a href="index.html">다시 검사하기</a>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const scoresParam = params.get("scores");
+    if (!scoresParam) {
+      document.getElementById('result').innerHTML = "<p>결과 데이터를 찾을 수 없습니다.</p>";
+    } else {
+      const scores = scoresParam.split(",").map(Number);
+
+      const types = [];
+      types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
+      types[1] = scores[1] >= 13 ? "E형(체험형)" : "W형(말씀형)";
+      types[2] = scores[2] >= 13 ? "D형(관계중심형)" : "P형(원칙중심형)";
+      types[3] = scores[3] >= 13 ? "O형(정돈형)" : "F형(유연형)";
+
+      const descriptions = {
+        "R": "사람들과 함께하는 것을 즐기고, 공동체 안에서 신앙을 키우는 스타일.",
+        "S": "혼자서 깊이 묵상하고 개인적인 만남을 선호하는 스타일.",
+        "E": "느낌과 체험을 중시하며 신앙을 생생하게 경험하는 스타일.",
+        "W": "말씀과 이성을 중심으로 차분하게 접근하는 스타일.",
+        "D": "하나님을 친밀한 아버지, 친구로 여기는 스타일.",
+        "P": "하나님의 법과 기준을 중시하는 스타일.",
+        "O": "계획적이고 체계적인 신앙생활을 선호하는 스타일.",
+        "F": "자유롭고 융통성 있는 신앙생활을 선호하는 스타일."
+      };
+
+      function getNickname(typeCode) {
+        const [c, e, h, p] = typeCode.split("-");
+        let nickname = "";
+        nickname += (c === "R") ? "따뜻한 " : "깊이있는 ";
+        nickname += (e === "E") ? "체험가 " : "사색가 ";
+        nickname += (h === "D") ? "동행자" : "원칙가";
+        nickname += (p === "O") ? " (계획형)" : " (자유형)";
+        return nickname;
+      }
+
+      const finalType = types.map(t => t[0]).join("-");
+      const nickname = getNickname(finalType);
+
+      let resultHtml = `
+        <p>공동체 참여성향: ${scores[0]}점 → ${types[0]}<br><em>${descriptions[types[0][0]]}</em></p>
+        <p>신앙 표현방식: ${scores[1]}점 → ${types[1]}<br><em>${descriptions[types[1][0]]}</em></p>
+        <p>하나님 인식방식: ${scores[2]}점 → ${types[2]}<br><em>${descriptions[types[2][0]]}</em></p>
+        <p>신앙생활 패턴: ${scores[3]}점 → ${types[3]}<br><em>${descriptions[types[3][0]]}</em></p>
+        <hr>
+        <p><strong>최종 유형: ${finalType}</strong><br>
+        <em>${nickname}</em></p>
+      `;
+
+      document.getElementById('result').innerHTML = resultHtml;
+    }
+  </script>
+</body>
+</html>
