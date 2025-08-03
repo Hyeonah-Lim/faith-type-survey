@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>검사 결과</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     body {
@@ -15,10 +14,7 @@
       padding: 20px;
       color: #333;
     }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-    }
+    h1 { text-align: center; color: #2c3e50; }
     #result-box {
       max-width: 800px;
       margin: 20px auto;
@@ -27,64 +23,25 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 30px;
     }
-    #result h2 {
-      text-align: center;
-      margin-top: 0;
-      color: #4a90e2;
-    }
-    #nickname {
-      text-align: center;
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #2c3e50;
-      margin-bottom: 5px;
-    }
-    #catchphrase {
-      text-align: center;
-      font-style: italic;
-      margin-bottom: 20px;
-      color: #666;
-    }
-    #description {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #444;
-    }
-    canvas {
-      margin: 0 auto;
-      display: block;
-      max-width: 100%;
-      height: auto !important;
-    }
+    #result h2 { text-align: center; margin-top: 0; color: #4a90e2; }
+    #nickname { text-align: center; font-size: 1.3rem; font-weight: bold; color: #2c3e50; margin-bottom: 5px; }
+    #catchphrase { text-align: center; font-style: italic; margin-bottom: 20px; color: #666; }
+    #description { text-align: center; margin-bottom: 30px; color: #444; }
+    canvas { margin: 0 auto; display: block; max-width: 100%; height: auto !important; }
     a, button {
-      display: block;
-      text-align: center;
-      margin: 20px auto 0;
-      text-decoration: none;
-      color: #fff;
-      background: #4a90e2;
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
+      display: block; text-align: center; margin: 20px auto 0; text-decoration: none; color: #fff;
+      background: #4a90e2; padding: 10px 20px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer;
     }
-    a:hover, button:hover {
-      background: #357abd;
-    }
-    #saveBtn {
-      background: #50c878;
-    }
-    #saveBtn:hover {
-      background: #3da96a;
-    }
+    a:hover, button:hover { background: #357abd; }
+    #saveBtn { background: #50c878; }
+    #saveBtn:hover { background: #3da96a; }
   </style>
 </head>
 <body>
   <h1>검사 결과</h1>
   <div id="result-box">
     <div id="result"></div>
-    <div style="position: relative; height: 300px;">
+    <div style="position: relative; height: 320px;">
       <canvas id="scoreChart"></canvas>
     </div>
   </div>
@@ -92,8 +49,8 @@
   <a href="index.html">다시 검사하기</a>
 
   <script>
-    // --- typeData 생략 (기존 그대로) ---
-    const typeData = [/* ... 기존 16개 데이터 그대로 ... */];
+    // --- typeData는 기존 그대로 ---
+    const typeData = [/* 16개 유형 데이터 */];
 
     const params = new URLSearchParams(window.location.search);
     const scoresParam = params.get("scores");
@@ -102,6 +59,7 @@
       document.getElementById('result').innerHTML = "<p>결과 데이터를 찾을 수 없습니다.</p>";
     } else {
       const scores = scoresParam.split(",").map(Number);
+      const adjustedScores = scores.map(s => s - 13);  // 13점을 0으로 맞춤
 
       const types = [];
       types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
@@ -148,8 +106,8 @@
         data: {
           labels: ["R ↔ S", "E ↔ W", "D ↔ P", "O ↔ F"],
           datasets: [{
-            label: '점수',
-            data: scores,
+            label: '편차',
+            data: adjustedScores,
             backgroundColor: ['#4a90e2','#50c878','#ffb347','#ff6666']
           }]
         },
@@ -162,31 +120,27 @@
             tooltip: {
               callbacks: {
                 label: (context) => {
-                  const score = context.raw;
+                  const diff = context.raw;
+                  const score = diff + 13;
                   const direction = score >= 13 ? "왼쪽 성향" : "오른쪽 성향";
                   return `${score}점 (${direction})`;
-                }
-              }
-            },
-            annotation: {
-              annotations: {
-                line1: {
-                  type: 'line',
-                  xMin: 13,
-                  xMax: 13,
-                  borderColor: 'red',
-                  borderWidth: 2,
-                  label: {
-                    content: '13점',
-                    enabled: true,
-                    position: 'center'
-                  }
                 }
               }
             }
           },
           scales: {
-            x: { suggestedMax: 20 }
+            x: {
+              min: -8,
+              max: 7,
+              grid: { color: '#ddd' },
+              ticks: {
+                callback: function(value) {
+                  if (value === -8) return "";
+                  if (value === 7) return "";
+                  return value;
+                }
+              }
+            }
           }
         }
       });
