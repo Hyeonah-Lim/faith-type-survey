@@ -35,21 +35,37 @@
     #saveBtn { background: #50c878; }
     #saveBtn:hover { background: #3da96a; }
 
-    .axis-wrapper { display: flex; align-items: center; margin: 16px 0; }
+    .axis-wrapper { display: flex; align-items: center; margin: 24px 0; flex-wrap: wrap; }
     .category { width: 140px; font-weight: bold; font-size: 14px; text-align: right; padding-right: 10px; }
-    .axis { display: flex; align-items: center; flex: 1; }
+    .axis { display: flex; align-items: center; flex: 1; min-width: 250px; }
     .left, .right { width: 80px; text-align: center; font-weight: bold; font-size: 13px; }
     .bar {
-      position: relative; flex: 1; height: 10px;
-      background: #ddd; margin: 0 10px; border-radius: 5px;
+      position: relative;
+      flex: 1;
+      min-width: 100px; /* 모바일에서도 막대 표시 */
+      height: 10px;
+      background: #ddd;
+      margin: 0 10px;
+      border-radius: 5px;
     }
     .indicator {
-      position: absolute; top: -5px;
-      width: 16px; height: 16px;
+      position: absolute;
+      top: -5px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       transform: translateX(-50%);
     }
-    .score { width: 50px; text-align: left; font-weight: bold; }
+    .indicator::after {
+      content: attr(data-percent) '%';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: #333;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -139,7 +155,7 @@
       const slidersContainer = document.getElementById('sliders');
       categoryInfo.forEach((info, index) => {
         const score = scores[index];
-        const percent = (score / 20) * 100;
+        const percent = Math.round((score / 20) * 100);
 
         const wrapper = document.createElement('div');
         wrapper.className = 'axis-wrapper';
@@ -149,10 +165,9 @@
         axis.innerHTML = `
           <span class="left">${info.left}</span>
           <div class="bar" style="background:${colors[index]}33;">
-            <div class="indicator" style="left:${percent}%; background:${colors[index]};"></div>
+            <div class="indicator" style="left:${percent}%; background:${colors[index]};" data-percent="${percent}"></div>
           </div>
           <span class="right">${info.right}</span>
-          <span class="score">${score}점</span>
         `;
 
         wrapper.innerHTML = `<div class="category">${info.category}</div>`;
