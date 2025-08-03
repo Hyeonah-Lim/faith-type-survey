@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>검사 결과</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     body {
       font-family: 'Noto Sans KR', sans-serif;
@@ -54,18 +55,27 @@
       max-width: 100%;
       height: auto !important;
     }
-    a {
+    a, button {
       display: block;
       text-align: center;
-      margin-top: 30px;
+      margin: 20px auto 0;
       text-decoration: none;
       color: #fff;
       background: #4a90e2;
       padding: 10px 20px;
       border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
     }
-    a:hover {
+    a:hover, button:hover {
       background: #357abd;
+    }
+    #saveBtn {
+      background: #50c878;
+    }
+    #saveBtn:hover {
+      background: #3da96a;
     }
   </style>
 </head>
@@ -77,6 +87,7 @@
       <canvas id="scoreChart"></canvas>
     </div>
   </div>
+  <button id="saveBtn">결과 이미지로 저장</button>
   <a href="index.html">다시 검사하기</a>
 
   <script>
@@ -151,6 +162,17 @@
         }
       });
     }
+
+    // 이미지 저장 버튼 기능
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const resultBox = document.getElementById('result-box');
+      html2canvas(resultBox).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = '신앙유형검사결과.png';
+        link.click();
+      });
+    });
   </script>
 </body>
 </html>
