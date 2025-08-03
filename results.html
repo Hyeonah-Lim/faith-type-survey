@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>검사 결과</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: 'Noto Sans KR', sans-serif;
@@ -16,13 +17,40 @@
       text-align: center;
       color: #2c3e50;
     }
-    #result {
+    #result-box {
       max-width: 800px;
       margin: 20px auto;
-      background: #e8f0fe;
-      border: 1px solid #ccd9ff;
-      border-radius: 10px;
-      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    #result h2 {
+      text-align: center;
+      margin-top: 0;
+      color: #4a90e2;
+    }
+    #nickname {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+    #catchphrase {
+      text-align: center;
+      font-style: italic;
+      margin-bottom: 20px;
+      color: #666;
+    }
+    #description {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #444;
+    }
+    canvas {
+      margin: 0 auto;
+      display: block;
     }
     a {
       display: block;
@@ -41,7 +69,10 @@
 </head>
 <body>
   <h1>검사 결과</h1>
-  <div id="result"></div>
+  <div id="result-box">
+    <div id="result"></div>
+    <canvas id="scoreChart" width="400" height="300"></canvas>
+  </div>
   <a href="index.html">다시 검사하기</a>
 
   <script>
@@ -73,7 +104,7 @@
     } else {
       const scores = scoresParam.split(",").map(Number);
 
-      // 4개 축 유형 결정
+      // 4개 축 유형
       const types = [];
       types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
       types[1] = scores[1] >= 13 ? "E형(체험형)" : "W형(말씀형)";
@@ -91,37 +122,44 @@
         "F": "자유롭고 융통성 있는 신앙생활을 선호하는 스타일."
       };
 
-      // 최종 유형 코드 (예: R-E-D-O)
-      const shortCodes = [
-        types[0][0], // R or S
-        types[1][0], // E or W
-        types[2][0], // D or P
-        types[3][0]  // O or F
-      ];
+      const shortCodes = [types[0][0], types[1][0], types[2][0], types[3][0]];
       const finalType = shortCodes.join("-");
-
-      // 닉네임 데이터 찾기
       const typeInfo = typeData.find(item => item.type === finalType);
 
-      // 결과 HTML
+      // 결과 텍스트
       let resultHtml = `
-        <p>공동체 참여성향: ${scores[0]}점 → ${types[0]}<br><em>${descriptions[types[0][0]]}</em></p>
-        <p>신앙 표현방식: ${scores[1]}점 → ${types[1]}<br><em>${descriptions[types[1][0]]}</em></p>
-        <p>하나님 인식방식: ${scores[2]}점 → ${types[2]}<br><em>${descriptions[types[2][0]]}</em></p>
-        <p>신앙생활 패턴: ${scores[3]}점 → ${types[3]}<br><em>${descriptions[types[3][0]]}</em></p>
-        <hr>
-        <p><strong>최종 유형: ${finalType}</strong></p>
+        <h2>최종 유형: ${finalType}</h2>
+        <div id="nickname">${typeInfo ? typeInfo.nickname : ""}</div>
+        <div id="catchphrase">${typeInfo ? typeInfo.catchphrase : ""}</div>
+        <div id="description">${typeInfo ? typeInfo.description : ""}</div>
       `;
 
-      if (typeInfo) {
-        resultHtml += `
-          <h3>${typeInfo.nickname}</h3>
-          <p><em>${typeInfo.catchphrase}</em></p>
-          <p>${typeInfo.description}</p>
-        `;
-      }
-
       document.getElementById('result').innerHTML = resultHtml;
+
+      // Chart.js로 그래프 그리기
+      const ctx = document.getElementById('scoreChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['공동체 참여성향', '신앙 표현방식', '하나님 인식방식', '신앙생활 패턴'],
+          datasets: [{
+            label: '점수',
+            data: scores,
+            backgroundColor: ['#4a90e2','#50c878','#ffb347','#ff6666']
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            x: { suggestedMax: 20 }
+          }
+        }
+      });
     }
   </script>
 </body>
