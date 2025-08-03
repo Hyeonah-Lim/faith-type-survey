@@ -45,26 +45,35 @@
   <a href="index.html">다시 검사하기</a>
 
   <script>
+    // 16개 전체 유형 데이터
     const typeData = [
-      { "type": "R-E-D-O", "nickname": "함께하는 마음 정원사", "catchphrase": "사랑으로 계획하며 나누자", "description": "체계적인 계획으로 공동체와 하나님의 사랑을 깊이 나누는 따뜻한 리더" },
-      { "type": "R-E-D-F", "nickname": "자유로운 사랑 전도사", "catchphrase": "마음이 이끄는 대로 사랑하자", "description": "즉흥적이고 유연하게 공동체 안에서 하나님의 사랑을 전하는 자유로운 영혼" },
-      { "type": "R-E-P-O", "nickname": "체계적인 감동 건축가", "catchphrase": "질서로 감동을 설계하자", "description": "계획적으로 공동체의 영적 체험을 조직하며 하나님의 원칙을 실천하는 기획자" },
-      { "type": "R-E-P-F", "nickname": "순간의 영감 나눔이", "catchphrase": "지금 이 순간, 진리를 느끼자", "description": "유연하게 공동체와 함께 하나님의 진리를 체험하며 순간의 영감을 나누는 활동가" },
-      { "type": "R-W-D-O", "nickname": "말씀으로 세우는 목자", "catchphrase": "체계적 말씀으로 사랑 나누기", "description": "계획적으로 말씀을 연구하고 공동체에 하나님의 친밀함을 체계적으로 전하는 교사" },
-      { "type": "R-W-D-F", "nickname": "유연한 말씀 동행자", "catchphrase": "말씀과 함께 자유롭게 걷기", "description": "자유롭게 말씀을 나누며 공동체와 함께 하나님과의 친밀한 관계를 추구하는 동반자" },
-      { "type": "S-E-D-O", "nickname": "고요한 사랑 수도자", "catchphrase": "묵상 속에서 사랑을 계획하기", "description": "체계적인 개인 묵상을 통해 하나님과의 친밀한 관계를 깊이 체험하는 영성가" },
-      { "type": "S-E-P-F", "nickname": "자유로운 진리 탐험가", "catchphrase": "혼자서 진리를 자유롭게 탐험", "description": "유연한 개인 영성으로 하나님의 원칙을 체험적으로 발견해가는 영적 모험가" },
-      { "type": "S-W-D-O", "nickname": "말씀 연구하는 친구", "catchphrase": "체계적 말씀으로 친밀함 추구", "description": "계획적인 개인 말씀 연구를 통해 하나님과의 깊은 우정을 쌓아가는 학자" },
-      { "type": "S-W-P-F", "nickname": "진리 속 자유 순례자", "catchphrase": "말씀 안에서 자유롭게 순례", "description": "유연한 개인 말씀 묵상으로 하나님의 진리 원칙을 자유롭게 탐구하는 순례자" }
+      { type: "R-E-D-O", nickname: "함께하는 마음 정원사", catchphrase: "사랑으로 계획하며 나누자", description: "체계적인 계획으로 공동체와 하나님의 사랑을 깊이 나누는 따뜻한 리더" },
+      { type: "R-E-D-F", nickname: "자유로운 사랑 전도사", catchphrase: "마음이 이끄는 대로 사랑하자", description: "즉흥적이고 유연하게 공동체 안에서 하나님의 사랑을 전하는 자유로운 영혼" },
+      { type: "R-E-P-O", nickname: "체계적인 감동 건축가", catchphrase: "질서로 감동을 설계하자", description: "계획적으로 공동체의 영적 체험을 조직하며 하나님의 원칙을 실천하는 기획자" },
+      { type: "R-E-P-F", nickname: "순간의 영감 나눔이", catchphrase: "지금 이 순간, 진리를 느끼자", description: "유연하게 공동체와 함께 하나님의 진리를 체험하며 순간의 영감을 나누는 활동가" },
+      { type: "R-W-D-O", nickname: "말씀으로 세우는 목자", catchphrase: "체계적 말씀으로 사랑 나누기", description: "계획적으로 말씀을 연구하고 공동체에 하나님의 친밀함을 체계적으로 전하는 교사" },
+      { type: "R-W-D-F", nickname: "유연한 말씀 동행자", catchphrase: "말씀과 함께 자유롭게 걷기", description: "자유롭게 말씀을 나누며 공동체와 함께 하나님과의 친밀한 관계를 추구하는 동반자" },
+      { type: "R-W-P-O", nickname: "원칙 세우는 말씀 디자이너", catchphrase: "말씀과 질서로 세우기", description: "말씀과 원칙을 기반으로 공동체를 계획적으로 세워 나가는 사람" },
+      { type: "R-W-P-F", nickname: "자유로운 말씀 탐험가", catchphrase: "말씀과 함께 자유를", description: "자유로운 분위기 속에서 말씀과 원칙을 함께 나누는 탐험가" },
+      { type: "S-E-D-O", nickname: "고요한 사랑 수도자", catchphrase: "묵상 속에서 사랑을 계획하기", description: "체계적인 개인 묵상을 통해 하나님과의 친밀한 관계를 깊이 체험하는 영성가" },
+      { type: "S-E-D-F", nickname: "자유로운 사랑 탐색자", catchphrase: "마음이 흐르는 대로 묵상", description: "자유롭게 개인 묵상을 즐기며 하나님과의 친밀한 동행을 추구하는 사람" },
+      { type: "S-E-P-O", nickname: "원칙 중심 영성 설계자", catchphrase: "묵상으로 세우는 삶", description: "개인 묵상과 체험 속에서 하나님의 원칙을 질서 있게 세우는 사람" },
+      { type: "S-E-P-F", nickname: "자유로운 진리 탐험가", catchphrase: "혼자서 진리를 자유롭게 탐험", description: "유연한 개인 영성으로 하나님의 원칙을 체험적으로 발견해가는 영적 모험가" },
+      { type: "S-W-D-O", nickname: "말씀 연구하는 친구", catchphrase: "체계적 말씀으로 친밀함 추구", description: "계획적인 개인 말씀 연구를 통해 하나님과의 깊은 우정을 쌓아가는 학자" },
+      { type: "S-W-D-F", nickname: "말씀과 동행하는 순례자", catchphrase: "자유로운 말씀의 여정", description: "자유로운 방식으로 말씀을 묵상하며 하나님과 함께 동행하는 순례자" },
+      { type: "S-W-P-O", nickname: "말씀 원칙 설계자", catchphrase: "말씀으로 질서를 세우다", description: "말씀 중심으로 삶을 계획하고 하나님의 원칙을 따라가는 설계자" },
+      { type: "S-W-P-F", nickname: "진리 속 자유 순례자", catchphrase: "말씀 안에서 자유롭게 순례", description: "유연한 개인 말씀 묵상으로 하나님의 진리 원칙을 자유롭게 탐구하는 순례자" }
     ];
 
     const params = new URLSearchParams(window.location.search);
     const scoresParam = params.get("scores");
+
     if (!scoresParam) {
       document.getElementById('result').innerHTML = "<p>결과 데이터를 찾을 수 없습니다.</p>";
     } else {
       const scores = scoresParam.split(",").map(Number);
 
+      // 4개 축 유형 결정
       const types = [];
       types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
       types[1] = scores[1] >= 13 ? "E형(체험형)" : "W형(말씀형)";
@@ -82,9 +91,19 @@
         "F": "자유롭고 융통성 있는 신앙생활을 선호하는 스타일."
       };
 
-      const finalType = types.map(t => t[0]).join("-");
+      // 최종 유형 코드 (예: R-E-D-O)
+      const shortCodes = [
+        types[0][0], // R or S
+        types[1][0], // E or W
+        types[2][0], // D or P
+        types[3][0]  // O or F
+      ];
+      const finalType = shortCodes.join("-");
+
+      // 닉네임 데이터 찾기
       const typeInfo = typeData.find(item => item.type === finalType);
 
+      // 결과 HTML
       let resultHtml = `
         <p>공동체 참여성향: ${scores[0]}점 → ${types[0]}<br><em>${descriptions[types[0][0]]}</em></p>
         <p>신앙 표현방식: ${scores[1]}점 → ${types[1]}<br><em>${descriptions[types[1][0]]}</em></p>
