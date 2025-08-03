@@ -124,12 +124,33 @@
       types[2] = scores[2] >= 13 ? "D형(관계중심형)" : "P형(원칙중심형)";
       types[3] = scores[3] >= 13 ? "O형(정돈형)" : "F형(유연형)";
 
+      const descriptions = {
+        "R": "사람들과 함께하는 것을 즐기고, 공동체 안에서 신앙을 키우는 스타일.",
+        "S": "혼자서 깊이 묵상하고 개인적인 만남을 선호하는 스타일.",
+        "E": "느낌과 체험을 중시하며 신앙을 생생하게 경험하는 스타일.",
+        "W": "말씀과 이성을 중심으로 차분하게 접근하는 스타일.",
+        "D": "하나님을 친밀한 아버지, 친구로 여기는 스타일.",
+        "P": "하나님의 법과 기준을 중시하는 스타일.",
+        "O": "계획적이고 체계적인 신앙생활을 선호하는 스타일.",
+        "F": "자유롭고 융통성 있는 신앙생활을 선호하는 스타일."
+      };
+
       const shortCodes = [types[0][0], types[1][0], types[2][0], types[3][0]];
       const finalType = shortCodes.join("-");
       const typeInfo = typeData.find(item => item.type === finalType);
 
+      // 각 축 설명 추가
+      let detailHtml = `
+        <p><strong>공동체 참여성향:</strong> ${types[0]} - ${descriptions[types[0][0]]}</p>
+        <p><strong>신앙 표현방식:</strong> ${types[1]} - ${descriptions[types[1][0]]}</p>
+        <p><strong>하나님 인식방식:</strong> ${types[2]} - ${descriptions[types[2][0]]}</p>
+        <p><strong>신앙생활 패턴:</strong> ${types[3]} - ${descriptions[types[3][0]]}</p>
+        <hr>
+      `;
+
       let resultHtml = `
         <h2>최종 유형: ${finalType}</h2>
+        ${detailHtml}
         <div id="nickname">${typeInfo ? typeInfo.nickname : ""}</div>
         <div id="catchphrase">${typeInfo ? typeInfo.catchphrase : ""}</div>
         <div id="description">${typeInfo ? typeInfo.description : ""}</div>
@@ -163,7 +184,6 @@
       });
     }
 
-    // 이미지 저장 버튼 기능
     document.getElementById('saveBtn').addEventListener('click', () => {
       const resultBox = document.getElementById('result-box');
       html2canvas(resultBox).then(canvas => {
