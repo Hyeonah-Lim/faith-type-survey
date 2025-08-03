@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>청년부 신앙유형 검사</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    h1 { text-align: center; }
+    .question { margin-bottom: 20px; }
+    .options label { margin-right: 15px; }
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    button {
+      display: block;
+      margin: 30px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>청년부 신앙유형 검사</h1>
+  <form id="quizForm"></form>
+  <button type="button" onclick="calculateResult()">제출</button>
+
+  <div id="result"></div>
+
+  <script>
+    const questions = [
+      // 1~5
+      "예배 후에는 다른 사람들과 함께 교제하는 시간을 갖는 것이 좋다.",
+      "교회에서 새로운 사람을 만나면 먼저 다가가서 말을 건다.",
+      "신앙의 고민이 있을 때 다른 성도들과 나누며 함께 해결하고 싶다.",
+      "여러 사람이 함께하는 기도회나 모임에서 더 은혜를 받는다.",
+      "전도할 때 친구들을 교회 모임에 초대해서 사람들과 만나게 하고 싶다.",
+      // 6~10
+      "찬양할 때 몸으로 표현하며 감정이 우러나는 것을 좋아한다.",
+      "큐티할 때 말씀을 통해 받은 감동과 느낌을 중심으로 정리한다.",
+      "기도응답을 경험했을 때 하나님이 살아계심을 체험적으로 느끼는 것이 중요하다.",
+      "성경공부 시간에 말씀을 통해 받은 은혜와 감동을 나누는 것을 좋아한다.",
+      "간증할 때 하나님을 경험한 순간의 감정과 느낌을 자세히 나눈다.",
+      // 11~15
+      "하나님을 나를 사랑하시는 아버지, 친구 같은 분으로 여긴다.",
+      "기도할 때 '아빠 아버지'라고 부르며 친근하게 대화하는 것이 편하다.",
+      "죄를 지었을 때 하나님의 사랑과 용서를 먼저 생각한다.",
+      "성경에서 하나님의 사랑과 은혜에 관한 말씀에서 가장 은혜를 받는다.",
+      "신앙생활의 주된 동기는 하나님과의 더 깊은 사랑의 관계이다.",
+      // 16~20
+      "큐티는 매일 정해진 시간에 정해진 분량으로 하는 것이 좋다.",
+      "성경은 1년 성경 읽기표와 같은 계획을 따라 체계적으로 읽는다.",
+      "교회 모임은 웬만하면 빠지지 않고 정기적으로 참석하려고 한다.",
+      "신앙 목표를 세울 때 구체적인 계획과 실행 방안을 정한다.",
+      "하나님의 뜻을 구할 때 성경적 원칙과 기준에 따라 체계적으로 판단한다."
+    ];
+
+    const form = document.getElementById('quizForm');
+
+    questions.forEach((q, index) => {
+      const div = document.createElement('div');
+      div.classList.add('question');
+      div.innerHTML = `<p>${index + 1}. ${q}</p>
+        <div class="options">
+          ${[1,2,3,4].map(val => `
+            <label>
+              <input type="radio" name="q${index}" value="${val}" required> ${val}점
+            </label>`).join('')}
+        </div>`;
+      form.appendChild(div);
+    });
+
+    function calculateResult() {
+      let scores = Array(4).fill(0);
+      for (let i = 0; i < 20; i++) {
+        const val = document.querySelector(`input[name=q${i}]:checked`);
+        if (!val) {
+          alert("모든 문항에 응답해주세요.");
+          return;
+        }
+        const group = Math.floor(i / 5);
+        scores[group] += parseInt(val.value);
+      }
+
+      const types = [];
+      types[0] = scores[0] >= 13 ? "R형(교제형)" : "S형(묵상형)";
+      types[1] = scores[1] >= 13 ? "E형(체험형)" : "W형(말씀형)";
+      types[2] = scores[2] >= 13 ? "D형(관계중심형)" : "P형(원칙중심형)";
+      types[3] = scores[3] >= 13 ? "O형(정돈형)" : "F형(유연형)";
+
+      const finalType = types.map(t => t[0]).join("-");
+
+      document.getElementById('result').innerHTML = `
+        <h2>결과</h2>
+        <p>공동체 참여성향: ${scores[0]}점 → ${types[0]}</p>
+        <p>신앙 표현방식: ${scores[1]}점 → ${types[1]}</p>
+        <p>하나님 인식방식: ${scores[2]}점 → ${types[2]}</p>
+        <p>신앙생활 패턴: ${scores[3]}점 → ${types[3]}</p>
+        <hr>
+        <p><strong>최종 유형: ${finalType}</strong></p>
+      `;
+    }
+  </script>
+</body>
+</html>
