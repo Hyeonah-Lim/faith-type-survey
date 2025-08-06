@@ -1,121 +1,1161 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>청년부 신앙유형 검사</title>
-  <style>
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 30px;
-    }
-    .question {
-      background: white;
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    .question p {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .options label {
-      display: inline-block;
-      margin-right: 20px;
-      cursor: pointer;
-    }
-    button {
-      display: block;
-      margin: 30px auto;
-      padding: 12px 30px;
-      font-size: 18px;
-      color: #fff;
-      background: #4a90e2;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #357abd;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>신앙유형검사 - 나만의 신앙 스타일 찾기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary: #5B72EE;
+            --primary-dark: #4A5FDB;
+            --secondary: #FF6B9D;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-dark: #2c3e50;
+            --text-light: #495057;
+            --gray-light: #f8f9fa;
+            --gray-medium: #e9ecef;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            overflow-x: hidden;
+            color: var(--text-dark);
+        }
+        
+        .container {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 시작 화면 */
+        .start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .logo {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .start-screen h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .start-screen .subtitle {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .start-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 18px 60px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .start-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* 검사 화면 */
+        .test-screen {
+            display: none;
+            background: white;
+            min-height: 100vh;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .header {
+            background: var(--background);
+            padding: 20px;
+            padding-top: calc(20px + env(safe-area-inset-top));
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .category-indicator {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .category-name {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        .question-container {
+            padding: 30px 20px;
+            padding-bottom: 120px;
+        }
+        
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .question-text {
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            background: var(--gray-light);
+            border: 2px solid transparent;
+            padding: 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option:hover {
+            background: var(--gray-medium);
+            transform: translateX(5px);
+        }
+        
+        .option:active {
+            transform: scale(0.98);
+        }
+        
+        .option.selected {
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            border-color: var(--primary);
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        .option.selected::before {
+            content: '✓';
+            position: absolute;
+            right: 20px;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn.prev {
+            background: var(--gray-medium);
+            color: var(--text-light);
+        }
+        
+        .nav-btn.next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .nav-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        
+        /* 결과 화면 */
+        .result-screen {
+            display: none;
+            background: white;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result-header {
+            background: var(--background);
+            padding: 50px 20px 40px;
+            padding-top: calc(50px + env(safe-area-inset-top));
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .type-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .type-code {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 15px 0;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .type-emoji {
+            font-size: 64px;
+            margin: 20px 0;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .type-nickname {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .result-content {
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .card {
+            background: var(--gray-light);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card h3 {
+            color: var(--text-dark);
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card p {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        
+        .traits {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .traits li {
+            padding: 12px 0;
+            color: var(--text-light);
+            font-size: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .traits li:last-child {
+            border-bottom: none;
+        }
+        
+        .traits li::before {
+            content: '✨';
+            flex-shrink: 0;
+        }
+        
+        .score-visualization {
+            background: white;
+            border: 2px solid var(--gray-medium);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .score-row {
+            margin: 20px 0;
+        }
+        
+        .score-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .score-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .score-bar-bg {
+            height: 10px;
+            background: var(--gray-medium);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+        
+        .actions {
+            padding: 20px;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom));
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: var(--gray-light);
+            color: var(--text-light);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* 저작권 */
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 12px;
+            background: var(--gray-light);
+            line-height: 1.6;
+        }
+        
+        .copyright strong {
+            color: var(--text-dark);
+        }
+        
+        /* 로딩 애니메이션 */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--gray-medium);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 반응형 */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>청년부 신앙유형 검사</h1>
-  <form id="quizForm"></form>
-  <button type="button" onclick="calculateResult()">제출</button>
-
-  <script>
-    const questions = [
-      // 1~5
-      "예배 후에는 다른 사람들과 함께 교제하는 시간을 갖는 것이 좋다.",
-      "교회에서 새로운 사람을 만나면 먼저 다가가서 말을 건다.",
-      "신앙의 고민이 있을 때 다른 성도들과 나누며 함께 해결하고 싶다.",
-      "여러 사람이 함께하는 기도회나 모임에서 더 은혜를 받는다.",
-      "전도할 때 친구들을 교회 모임에 초대해서 사람들과 만나게 하고 싶다.",
-      // 6~10
-      "찬양할 때 몸으로 표현하며 감정이 우러나는 것을 좋아한다.",
-      "큐티할 때 말씀을 통해 받은 감동과 느낌을 중심으로 정리한다.",
-      "기도응답을 경험했을 때 하나님이 살아계심을 체험적으로 느끼는 것이 중요하다.",
-      "성경공부 시간에 말씀을 통해 받은 은혜와 감동을 나누는 것을 좋아한다.",
-      "간증할 때 하나님을 경험한 순간의 감정과 느낌을 자세히 나눈다.",
-      // 11~15
-      "하나님을 나를 사랑하시는 아버지, 친구 같은 분으로 여긴다.",
-      "기도할 때 '아빠 아버지'라고 부르며 친근하게 대화하는 것이 편하다.",
-      "죄를 지었을 때 하나님의 사랑과 용서를 먼저 생각한다.",
-      "성경에서 하나님의 사랑과 은혜에 관한 말씀에서 가장 은혜를 받는다.",
-      "신앙생활의 주된 동기는 하나님과의 더 깊은 사랑의 관계이다.",
-      // 16~20
-      "큐티는 매일 정해진 시간에 정해진 분량으로 하는 것이 좋다.",
-      "성경은 1년 성경 읽기표와 같은 계획을 따라 체계적으로 읽는다.",
-      "교회 모임은 웬만하면 빠지지 않고 정기적으로 참석하려고 한다.",
-      "신앙 목표를 세울 때 구체적인 계획과 실행 방안을 정한다.",
-      "하나님의 뜻을 구할 때 성경적 원칙과 기준에 따라 체계적으로 판단한다."
-    ];
-
-    const form = document.getElementById('quizForm');
-
-    // 문항 생성
-    questions.forEach((q, index) => {
-      const div = document.createElement('div');
-      div.classList.add('question');
-      div.innerHTML = `<p>${index + 1}. ${q}</p>
-        <div class="options">
-          ${[1,2,3,4].map(val => `
-            <label>
-              <input type="radio" name="q${index}" value="${val}" required> ${val}점
-            </label>`).join('')}
-        </div>`;
-      form.appendChild(div);
-    });
-
-    // 결과 페이지로 이동
-    function calculateResult() {
-      let scores = Array(4).fill(0);
-      for (let i = 0; i < 20; i++) {
-        const val = document.querySelector(`input[name=q${i}]:checked`);
-        if (!val) {
-          alert("모든 문항에 응답해주세요.");
-          return;
+    <div class="container">
+        <!-- 시작 화면 -->
+        <div class="start-screen" id="startScreen">
+            <div class="logo">🙏</div>
+            <h1>신앙유형검사</h1>
+            <div class="subtitle">
+                나만의 독특한 신앙 스타일을 발견해보세요<br>
+                16가지 유형으로 알아보는 나의 신앙 DNA
+            </div>
+            <button class="start-btn" onclick="startTest()">시작하기</button>
+            <div style="margin-top: 40px; font-size: 14px; opacity: 0.8;">
+                ⏱ 약 5분 소요 | 📝 16문항
+            </div>
+        </div>
+        
+        <!-- 검사 화면 -->
+        <div class="test-screen" id="testScreen">
+            <div class="header">
+                <div class="category-indicator">
+                    <div class="category-name" id="categoryName">공동체 참여 성향</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+            
+            <div class="navigation">
+                <button class="nav-btn prev" id="prevBtn" onclick="previousQuestion()">이전</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()" disabled>다음</button>
+            </div>
+        </div>
+        
+        <!-- 결과 화면 -->
+        <div class="result-screen" id="resultScreen">
+            <div class="result-header">
+                <div class="type-badge">당신의 신앙유형</div>
+                <div class="type-emoji" id="typeEmoji"></div>
+                <div class="type-code" id="typeCode"></div>
+                <div class="type-nickname" id="typeNickname"></div>
+            </div>
+            
+            <div class="result-content">
+                <div class="card">
+                    <h3>📖 유형 설명</h3>
+                    <p id="typeDescription"></p>
+                </div>
+                
+                <div class="card">
+                    <h3>✨ 주요 특징</h3>
+                    <ul class="traits" id="traitsList"></ul>
+                </div>
+                
+                <div class="score-visualization">
+                    <h3 style="margin-bottom: 25px; text-align: center;">🎯 상세 분석</h3>
+                    <div id="scoreDetails"></div>
+                </div>
+                
+                <div class="card">
+                    <h3>💡 성장 포인트</h3>
+                    <p id="growthPoint"></p>
+                </div>
+                
+                <div class="card">
+                    <h3>🤝 잘 맞는 유형</h3>
+                    <p id="compatibility"></p>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button class="action-btn primary" onclick="shareResult()">📤 결과 공유하기</button>
+                <button class="action-btn secondary" onclick="restartTest()">🔄 다시 검사하기</button>
+            </div>
+            
+            <div class="copyright">
+                <strong>신앙유형검사</strong><br>
+                Original Idea by <strong>문은성, 송은서</strong><br>
+                Developed by <strong>임현아</strong><br>
+                © 2024 All rights reserved
+            </div>
+        </div>
+        
+        <!-- 로딩 -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 문항 데이터
+        const questions = [
+            // 공동체 참여 성향 (R/S)
+            {
+                category: '공동체 참여 성향',
+                text: '🎵 성가대 연습에 10분 늦은 당신! 모두가 먼저 와 있고, 당신만 눈치 보며 들어간 상황에서…',
+                options: [
+                    { text: '가볍게 사과하고 주변에 자연스럽게 섞이는 편이다.', type: 'R' },
+                    { text: '누구도 말 안 걸었으면 하고 그냥 묵묵히 앉아있는 편이다.', type: 'S' }
+                ]
+            },
+            {
+                category: '공동체 참여 성향',
+                text: '🙋 청년부에 새로 온 지체가 혼자 앉아있다.',
+                options: [
+                    { text: '반가운 마음으로 먼저 다가가 말을 건넨다.', type: 'R' },
+                    { text: '어색해서 다가가긴 어렵지만 조용히 관심을 갖고 기회가 되면 개인적으로 대화한다.', type: 'S' }
+                ]
+            },
+            {
+                category: '공동체 참여 성향',
+                text: '📆 수련회에 참석하게 된 당신, 가장 기대하는 것은?',
+                options: [
+                    { text: '많은 사람들과 함께 뜨거운 예배를 드리는 것', type: 'R' },
+                    { text: '혼자만의 시간에 뜨겁게 기도하는 것', type: 'S' }
+                ]
+            },
+            {
+                category: '공동체 참여 성향',
+                text: '🧠 신앙적인 고민이 깊어진 시기, 당신은?',
+                options: [
+                    { text: '신앙 친구들과 나누며 함께 기도한다.', type: 'R' },
+                    { text: '혼자 하나님께 기도하며 답을 구한다.', type: 'S' }
+                ]
+            },
+            // 신앙 표현방식 (E/W)
+            {
+                category: '신앙 표현방식',
+                text: '🎤 찬양집회에 참석한 당신, 어떤 스타일인가요?',
+                options: [
+                    { text: '몸으로 표현하며 감정이 우러나는 찬양을 좋아한다', type: 'E' },
+                    { text: '가사의 의미를 생각하며 조용히 마음으로 부른다', type: 'W' }
+                ]
+            },
+            {
+                category: '신앙 표현방식',
+                text: '📖 말씀 듣는 중, 당신의 자세는?',
+                options: [
+                    { text: '말씀을 통해 받은 감동과 느낌을 중심으로 정리한다.', type: 'E' },
+                    { text: '논리적 흐름과 단어의 뜻을 구조적으로 정리한다.', type: 'W' }
+                ]
+            },
+            {
+                category: '신앙 표현방식',
+                text: '🙏 기도응답을 경험했을 때',
+                options: [
+                    { text: '하나님이 살아계심을 느꼈다는 체험에 집중한다.', type: 'E' },
+                    { text: '하나님의 뜻이 무엇인지 깨달은 것에 집중한다.', type: 'W' }
+                ]
+            },
+            {
+                category: '신앙 표현방식',
+                text: '💬 수련회 이후, 목장 사람들과 함께 간증 나눔을 하게 된 당신',
+                options: [
+                    { text: '하나님을 경험한 순간의 감정과 느낌을 자세히 나눈다', type: 'E' },
+                    { text: '하나님이 어떤 방법으로 역사하셨는지 사실 중심으로 나눈다', type: 'W' }
+                ]
+            },
+            // 하나님 인식방식 (D/P)
+            {
+                category: '하나님 인식방식',
+                text: '📖 성경을 읽을 때 가장 먼저 드는 감정은?',
+                options: [
+                    { text: '하나님이 내게 말 걸어 주시는 듯한 친밀감을 느끼는 편이다', type: 'D' },
+                    { text: '하나님의 명령과 기준이 무엇인지 찾는 편이다', type: 'P' }
+                ]
+            },
+            {
+                category: '하나님 인식방식',
+                text: '🙏 기도할 때, 당신은 하나님을 어떻게 그리는가?',
+                options: [
+                    { text: '내가 힘들 때 안아 주시는 따뜻한 분', type: 'D' },
+                    { text: '내 삶을 판단하고 이끄시는 기준이자 주권자', type: 'P' }
+                ]
+            },
+            {
+                category: '하나님 인식방식',
+                text: '🧭 믿음의 결정을 내려야 할 때, 당신은?',
+                options: [
+                    { text: '마음에 평안이 있는지를 중심으로 분별한다.', type: 'D' },
+                    { text: '말씀의 기준에 맞는지를 따져본다.', type: 'P' }
+                ]
+            },
+            {
+                category: '하나님 인식방식',
+                text: '✝️ 신앙생활의 주된 동기는',
+                options: [
+                    { text: '하나님과의 더 깊은 사랑의 관계를 위해', type: 'D' },
+                    { text: '하나님이 기뻐하시는 올바른 삶을 살기 위해', type: 'P' }
+                ]
+            },
+            // 신앙생활 패턴 (O/F)
+            {
+                category: '신앙생활 패턴',
+                text: '📆 수련회 전날 밤, 당신은?',
+                options: [
+                    { text: '짐, 일정, 말씀 다 정리하고 기도까지 마친 상태다.', type: 'O' },
+                    { text: '마음 가는 대로 내일 아침에 짐 싸도 괜찮다.', type: 'F' }
+                ]
+            },
+            {
+                category: '신앙생활 패턴',
+                text: '📖 성경 읽기를 시작하려는 당신.',
+                options: [
+                    { text: '계획표를 세워 하루 분량을 지키려고 노력하는 편이다.', type: 'O' },
+                    { text: '마음에 끌리는 본문 위주로 자유롭게 읽는 편이다.', type: 'F' }
+                ]
+            },
+            {
+                category: '신앙생활 패턴',
+                text: '📝 기도제목을 기록하는 방식은?',
+                options: [
+                    { text: '날짜별로 정리된 노트나 앱을 사용하는 편이다.', type: 'O' },
+                    { text: '떠오를 때 간단히 메모하는 편이다.', type: 'F' }
+                ]
+            },
+            {
+                category: '신앙생활 패턴',
+                text: '⛪ 신앙생활을 실천하는 나만의 방식은?',
+                options: [
+                    { text: '신앙생활은 계획적으로 실천하는 것이 중요하다고 생각한다.', type: 'O' },
+                    { text: '신앙생활은 흐름에 따라 자연스럽게 이어지는 것이 더 의미 있다고 생각한다.', type: 'F' }
+                ]
+            }
+        ];
+        
+        // 유형별 정보
+        const typeInfo = {
+            'REDO': {
+                emoji: '🔥',
+                nickname: '열정적인 공동체 섬김이',
+                description: '당신은 공동체 안에서 뜨겁게 예배하고 섬기는 것을 통해 하나님을 만납니다. 체험적이고 감정적인 신앙을 추구하며, 사랑의 하나님과 친밀한 관계를 맺고, 규칙적인 신앙생활을 실천합니다.',
+                traits: [
+                    '공동체 예배에서 큰 은혜를 받습니다',
+                    '찬양과 기도로 하나님의 임재를 체험합니다',
+                    '하나님의 사랑을 깊이 느끼고 전합니다',
+                    '체계적인 사역과 봉사를 좋아합니다'
+                ],
+                growth: '때로는 혼자만의 조용한 묵상 시간을 가져보세요. 말씀을 깊이 연구하는 시간이 당신의 열정적인 신앙에 깊이를 더해줄 것입니다.',
+                compatibility: 'SWPO(원칙적 말씀 연구가)와 균형을 이루면 좋습니다. 서로의 부족한 부분을 채워줄 수 있어요.'
+            },
+            'REDF': {
+                emoji: '💫',
+                nickname: '자유로운 사랑의 예배자',
+                description: '공동체 안에서 자유롭게 하나님의 사랑을 표현하고 체험합니다. 즉흥적이고 감동적인 예배를 사랑하며, 성령의 인도하심을 따라 유연하게 신앙생활을 합니다.',
+                traits: [
+                    '함께하는 예배에서 큰 은혜를 받습니다',
+                    '성령의 임재를 강하게 느낍니다',
+                    '사랑과 은혜의 하나님을 경험합니다',
+                    '자유롭고 즉흥적인 신앙 표현을 좋아합니다'
+                ],
+                growth: '가끔은 계획적인 말씀 읽기나 체계적인 성경공부를 시도해보세요. 자유로움 속에서도 영적 훈련의 규칙성이 더 깊은 성장을 가져다줄 수 있습니다.',
+                compatibility: 'SWPO(원칙적 말씀 연구가)와 잘 맞습니다. 당신의 자유로움과 그들의 체계성이 좋은 시너지를 만들어냅니다.'
+            },
+            'REPO': {
+                emoji: '📖',
+                nickname: '체계적인 공동체 교사',
+                description: '공동체 안에서 체험적 신앙과 원칙적 신앙의 균형을 추구합니다. 정돈된 신앙생활을 통해 하나님의 진리를 체험하고 나누기를 좋아합니다.',
+                traits: [
+                    '교제와 나눔을 중요시합니다',
+                    '예배와 찬양에서 은혜를 받습니다',
+                    '하나님의 공의와 진리를 추구합니다',
+                    '규칙적이고 체계적인 신앙생활을 합니다'
+                ],
+                growth: '때로는 계획에서 벗어나 성령의 즉흥적인 인도하심에 자신을 맡겨보세요. 하나님과의 개인적이고 친밀한 관계도 더욱 깊어질 수 있습니다.',
+                compatibility: 'SWDF(은혜로운 말씀 묵상가)와 좋은 팀을 이룹니다. 함께 균형 잡힌 신앙공동체를 만들어갈 수 있습니다.'
+            },
+            'REPF': {
+                emoji: '🙌',
+                nickname: '유연한 공동체 중보자',
+                description: '사람들과 함께 자유롭게 예배하고 중보하는 것을 좋아합니다. 체험적 신앙과 원칙적 신앙을 유연하게 조화시키며 살아갑니다.',
+                traits: [
+                    '함께 기도할 때 큰 힘을 얻습니다',
+                    '찬양과 예배를 통해 하나님을 만납니다',
+                    '진리 안에서 자유를 누립니다',
+                    '성령의 인도하심에 민감합니다'
+                ],
+                growth: '혼자만의 깊은 묵상 시간과 체계적인 말씀 공부를 병행해보세요. 공동체와 개인의 균형이 더욱 견고한 신앙을 만들어줄 것입니다.',
+                compatibility: 'SWDO(말씀 묵상 전문가)와 서로를 보완합니다. 당신의 유연함과 그들의 깊이가 만나면 놀라운 성장이 일어납니다.'
+            },
+            'RWDO': {
+                emoji: '👥',
+                nickname: '말씀 중심 공동체 리더',
+                description: '말씀을 기반으로 공동체를 섬기고 이끄는 것을 좋아합니다. 관계적이면서도 체계적인 방식으로 신앙을 실천합니다.',
+                traits: [
+                    '성경공부 인도를 잘합니다',
+                    '말씀을 통해 사람들을 섬깁니다',
+                    '사랑의 하나님을 가르칩니다',
+                    '체계적인 양육과 훈련을 중시합니다'
+                ],
+                growth: '가끔은 즉흥적인 찬양이나 자유로운 기도 시간을 가져보세요. 체험적 신앙의 요소가 당신의 말씀 중심 신앙을 더욱 풍성하게 만들어줄 것입니다.',
+                compatibility: 'SEPF(유연한 영성 탐구자)와 좋은 균형을 이룹니다. 서로 다른 관점이 더 넓은 신앙의 스펙트럼을 만듭니다.'
+            },
+            'RWDF': {
+                emoji: '💝',
+                nickname: '은혜로운 말씀 교사',
+                description: '말씀을 통해 하나님의 사랑을 전하고 가르치는 것을 좋아합니다. 진리와 은혜의 균형을 추구하며 유연하게 사역합니다.',
+                traits: [
+                    '말씀을 쉽고 은혜롭게 전합니다',
+                    '사람들과 말씀을 나누기를 좋아합니다',
+                    '사랑과 진리의 균형을 추구합니다',
+                    '상황에 따라 유연하게 접근합니다'
+                ],
+                growth: '개인적인 묵상 시간을 더 가지고, 체계적인 영적 훈련을 시도해보세요. 규칙성이 당신의 은혜로운 사역에 안정감을 더해줄 것입니다.',
+                compatibility: 'SEPO(체계적인 영성 연구자)와 함께하면 좋습니다. 당신의 은혜와 그들의 깊이가 만나 풍성한 열매를 맺습니다.'
+            },
+            'RWPO': {
+                emoji: '⚖️',
+                nickname: '원칙적인 성경 교사',
+                description: '정확한 성경 지식을 바탕으로 체계적으로 가르치고 양육하는 것을 좋아합니다. 진리를 명확하게 전달하는 은사가 있습니다.',
+                traits: [
+                    '성경을 체계적으로 가르칩니다',
+                    '교리와 신학에 관심이 많습니다',
+                    '진리와 원칙을 중요시합니다',
+                    '규칙적인 성경공부를 인도합니다'
+                ],
+                growth: '감정적이고 체험적인 신앙의 요소도 받아들여보세요. 머리로 아는 지식이 가슴으로 느끼는 은혜와 만날 때 더 큰 영향력을 발휘할 수 있습니다.',
+                compatibility: 'SEDF(자유로운 묵상 예배자)와 균형을 이룹니다. 당신의 체계성과 그들의 자유로움이 조화를 이룹니다.'
+            },
+            'RWPF': {
+                emoji: '🌊',
+                nickname: '유연한 진리 전달자',
+                description: '상황에 따라 유연하게 말씀을 전하고 가르치는 것을 좋아합니다. 진리를 다양한 방식으로 표현할 줄 압니다.',
+                traits: [
+                    '말씀을 창의적으로 전달합니다',
+                    '상황에 맞게 접근법을 바꿉니다',
+                    '진리의 다양한 면을 보여줍니다',
+                    '자유롭게 성경을 가르칩니다'
+                ],
+                growth: '때로는 혼자만의 깊은 묵상과 규칙적인 영적 훈련을 시도해보세요. 내면의 안정감이 당신의 유연한 사역을 더욱 견고하게 만들어줄 것입니다.',
+                compatibility: 'SEDO(조용한 영성 수행자)와 서로를 보완합니다. 당신의 활동성과 그들의 깊이가 균형을 만듭니다.'
+            },
+            'SEDO': {
+                emoji: '🕊️',
+                nickname: '조용한 영성 수행자',
+                description: '개인적인 묵상과 기도를 통해 하나님을 체험합니다. 규칙적이고 체계적인 영성 훈련을 통해 신앙을 깊이 있게 만들어갑니다.',
+                traits: [
+                    '깊은 묵상과 기도를 좋아합니다',
+                    '개인적인 영성 체험을 중시합니다',
+                    '사랑의 하나님과 친밀한 관계를 맺습니다',
+                    '규칙적인 영적 훈련을 실천합니다'
+                ],
+                growth: '가끔은 공동체와 함께하는 예배와 교제에 더 적극적으로 참여해보세요. 다른 사람들과의 신앙 나눔이 당신의 깊은 영성을 더욱 풍성하게 만들어줄 것입니다.',
+                compatibility: 'RWPF(유연한 진리 전달자)와 좋은 팀을 이룹니다. 당신의 깊이와 그들의 소통 능력이 시너지를 만듭니다.'
+            },
+            'SEDF': {
+                emoji: '🌟',
+                nickname: '자유로운 묵상 예배자',
+                description: '혼자만의 시간에 자유롭게 하나님을 체험하고 예배합니다. 즉흥적이면서도 깊이 있는 영성을 추구합니다.',
+                traits: [
+                    '자유로운 개인 예배를 좋아합니다',
+                    '성령의 인도하심에 민감합니다',
+                    '친밀한 하나님과의 관계를 추구합니다',
+                    '유연한 영성 생활을 합니다'
+                ],
+                growth: '때로는 공동체 안에서 함께 예배하고, 체계적인 말씀 공부에도 참여해보세요. 균형 잡힌 신앙생활이 당신의 자유로운 영성을 더욱 견고하게 만들어줄 것입니다.',
+                compatibility: 'RWPO(원칙적인 성경 교사)와 서로를 보완합니다. 당신의 자유로움과 그들의 체계성이 균형을 이룹니다.'
+            },
+            'SEPO': {
+                emoji: '📿',
+                nickname: '체계적인 영성 연구자',
+                description: '체험적 영성과 원칙적 신앙을 조화시키며, 혼자만의 체계적인 영적 훈련을 추구합니다.',
+                traits: [
+                    '규칙적인 묵상과 기도를 실천합니다',
+                    '영성 훈련에 체계적으로 접근합니다',
+                    '진리 안에서 영적 체험을 추구합니다',
+                    '깊이 있는 개인 신앙을 가집니다'
+                ],
+                growth: '공동체와 함께하는 시간을 늘리고, 때로는 즉흥적이고 자유로운 예배도 경험해보세요. 다양한 신앙 표현이 당신의 영성을 더욱 풍부하게 만들어줄 것입니다.',
+                compatibility: 'RWDF(은혜로운 말씀 교사)와 잘 맞습니다. 당신의 깊이와 그들의 소통 능력이 좋은 조화를 이룹니다.'
+            },
+            'SEPF': {
+                emoji: '✨',
+                nickname: '유연한 영성 탐구자',
+                description: '개인적인 영성 체험을 자유롭게 탐구하며, 원칙과 자유 사이에서 균형을 찾아갑니다.',
+                traits: [
+                    '다양한 영성 훈련을 시도합니다',
+                    '개인적 체험을 중시합니다',
+                    '진리를 자유롭게 탐구합니다',
+                    '유연한 영성 생활을 추구합니다'
+                ],
+                growth: '공동체 활동에 더 참여하고, 때로는 체계적인 말씀 공부나 정기적인 영적 훈련도 시도해보세요. 안정성이 당신의 탐구하는 영성을 더욱 깊게 만들어줄 것입니다.',
+                compatibility: 'RWDO(말씀 중심 공동체 리더)와 좋은 균형을 이룹니다. 서로 다른 관점이 더 넓은 신앙의 스펙트럼을 만듭니다.'
+            },
+            'SWDO': {
+                emoji: '📚',
+                nickname: '말씀 묵상 전문가',
+                description: '혼자서 깊이 있게 말씀을 연구하고 묵상하는 것을 좋아합니다. 체계적이고 규칙적인 말씀 생활을 통해 하나님을 만납니다.',
+                traits: [
+                    '깊이 있는 말씀 연구를 좋아합니다',
+                    '혼자만의 조용한 묵상 시간을 중시합니다',
+                    '사랑의 하나님을 말씀으로 만납니다',
+                    '체계적인 성경 읽기를 실천합니다'
+                ],
+                growth: '때로는 공동체와 함께 말씀을 나누고, 찬양과 기도를 통한 체험적 신앙도 경험해보세요. 머리와 가슴이 함께하는 신앙이 더욱 풍성해질 것입니다.',
+                compatibility: 'REPF(유연한 공동체 중보자)와 서로를 보완합니다. 당신의 깊이와 그들의 유연함이 좋은 시너지를 만듭니다.'
+            },
+            'SWDF': {
+                emoji: '💖',
+                nickname: '은혜로운 말씀 묵상가',
+                description: '말씀 묵상을 통해 하나님의 사랑을 깊이 체험합니다. 자유롭고 유연한 방식으로 말씀을 묵상하고 적용합니다.',
+                traits: [
+                    '말씀에서 은혜를 발견합니다',
+                    '개인적인 묵상을 중시합니다',
+                    '사랑의 하나님을 친밀하게 만납니다',
+                    '자유롭게 말씀을 묵상합니다'
+                ],
+                growth: '공동체 활동과 체계적인 성경공부에도 참여해보세요. 다른 사람들과의 나눔이 당신의 개인적인 묵상을 더욱 풍부하게 만들어줄 것입니다.',
+                compatibility: 'REPO(체계적인 공동체 교사)와 좋은 팀을 이룹니다. 함께 균형 잡힌 신앙공동체를 만들어갈 수 있습니다.'
+            },
+            'SWPO': {
+                emoji: '🔍',
+                nickname: '원칙적인 말씀 연구가',
+                description: '혼자서 체계적으로 말씀을 연구하고 진리를 탐구합니다. 정확한 해석과 바른 적용을 중시합니다.',
+                traits: [
+                    '성경을 깊이 연구합니다',
+                    '원어와 주석을 참고합니다',
+                    '진리와 원칙을 추구합니다',
+                    '체계적인 말씀 공부를 합니다'
+                ],
+                growth: '때로는 감정적이고 체험적인 신앙 요소도 받아들여보세요. 공동체와 함께하는 예배와 교제가 당신의 깊은 말씀 연구에 생명력을 불어넣을 것입니다.',
+                compatibility: 'REDF(자유로운 사랑의 예배자)와 잘 맞습니다. 당신의 체계성과 그들의 자유로움이 좋은 시너지를 만들어냅니다.'
+            },
+            'SWPF': {
+                emoji: '🌈',
+                nickname: '자유로운 진리 탐구자',
+                description: '자유롭게 말씀을 탐구하고 진리를 발견하는 것을 좋아합니다. 유연한 방식으로 성경을 연구하고 적용합니다.',
+                traits: [
+                    '다양한 관점으로 말씀을 봅니다',
+                    '자유롭게 진리를 탐구합니다',
+                    '개인적인 깨달음을 중시합니다',
+                    '유연한 말씀 공부를 합니다'
+                ],
+                growth: '공동체 활동에 더 참여하고, 때로는 체계적이고 규칙적인 영적 훈련도 시도해보세요. 안정성과 관계성이 당신의 자유로운 탐구를 더욱 균형 있게 만들어줄 것입니다.',
+                compatibility: 'REDO(열정적인 공동체 섬김이)와 서로를 보완합니다. 당신의 깊이와 그들의 열정이 좋은 균형을 만듭니다.'
+            }
+        };
+        
+        // 전역 변수
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = { R: 0, S: 0, E: 0, W: 0, D: 0, P: 0, O: 0, F: 0 };
+        
+        // 테스트 시작
+        function startTest() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('testScreen').style.display = 'block';
+            
+            currentQuestion = 0;
+            answers = [];
+            scores = { R: 0, S: 0, E: 0, W: 0, D: 0, P: 0, O: 0, F: 0 };
+            
+            loadQuestion();
         }
-        const group = Math.floor(i / 5);
-        scores[group] += parseInt(val.value);
-      }
-
-      // 점수를 URL 파라미터로 전달
-      const query = scores.join(",");
-      window.location.href = `results.html?scores=${query}`;
-    }
-  </script>
+        
+        // 문항 로드
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            
+            document.getElementById('categoryName').textContent = q.category;
+            document.getElementById('questionNumber').textContent = `Q${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('questionText').textContent = q.text;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option.text;
+                optionDiv.onclick = () => selectOption(index);
+                
+                if (answers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            updateProgress();
+            updateNavButtons();
+        }
+        
+        // 옵션 선택
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+            
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        // 다음 문항
+        function nextQuestion() {
+            if (answers[currentQuestion] === undefined) return;
+            
+            currentQuestion++;
+            
+            if (currentQuestion >= questions.length) {
+                calculateResult();
+            } else {
+                loadQuestion();
+            }
+        }
+        
+        // 이전 문항
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        }
+        
+        // 진행률 업데이트
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+        
+        // 네비게이션 버튼 업데이트
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextBtn').textContent = '결과 보기';
+            } else {
+                document.getElementById('nextBtn').textContent = '다음';
+            }
+        }
+        
+        // 결과 계산
+        function calculateResult() {
+            // 점수 계산
+            answers.forEach((answerIndex, questionIndex) => {
+                const type = questions[questionIndex].options[answerIndex].type;
+                scores[type]++;
+            });
+            
+            // 유형 결정
+            let type = '';
+            type += scores.R > scores.S ? 'R' : 'S';
+            type += scores.E > scores.W ? 'E' : 'W';
+            type += scores.D > scores.P ? 'D' : 'P';
+            type += scores.O > scores.F ? 'O' : 'F';
+            
+            showResult(type);
+        }
+        
+        // 결과 표시
+        function showResult(type) {
+            document.getElementById('testScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            
+            const info = typeInfo[type];
+            
+            document.getElementById('typeEmoji').textContent = info.emoji;
+            document.getElementById('typeCode').textContent = type;
+            document.getElementById('typeNickname').textContent = info.nickname;
+            document.getElementById('typeDescription').textContent = info.description;
+            
+            // 특징 리스트
+            const traitsList = document.getElementById('traitsList');
+            traitsList.innerHTML = '';
+            info.traits.forEach(trait => {
+                const li = document.createElement('li');
+                li.textContent = trait;
+                traitsList.appendChild(li);
+            });
+            
+            // 성장 포인트
+            document.getElementById('growthPoint').textContent = info.growth;
+            
+            // 잘 맞는 유형
+            document.getElementById('compatibility').textContent = info.compatibility;
+            
+            // 점수 시각화
+            displayScores();
+            
+            // 스크롤 최상단으로
+            window.scrollTo(0, 0);
+        }
+        
+        // 점수 시각화
+        function displayScores() {
+            const container = document.getElementById('scoreDetails');
+            container.innerHTML = '';
+            
+            const pairs = [
+                { labels: ['교제형(R)', '묵상형(S)'], values: [scores.R, scores.S] },
+                { labels: ['체험형(E)', '말씀형(W)'], values: [scores.E, scores.W] },
+                { labels: ['관계중심(D)', '원칙중심(P)'], values: [scores.D, scores.P] },
+                { labels: ['정돈형(O)', '유연형(F)'], values: [scores.O, scores.F] }
+            ];
+            
+            pairs.forEach(pair => {
+                const total = pair.values[0] + pair.values[1] || 1;
+                const percentage = (pair.values[0] / total) * 100;
+                
+                const row = document.createElement('div');
+                row.className = 'score-row';
+                row.innerHTML = `
+                    <div class="score-labels">
+                        <span class="score-label">${pair.labels[0]}</span>
+                        <span class="score-label">${pair.labels[1]}</span>
+                    </div>
+                    <div class="score-bar-bg">
+                        <div class="score-fill" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                container.appendChild(row);
+                
+                // 애니메이션 효과
+                setTimeout(() => {
+                    row.querySelector('.score-fill').style.width = `${percentage}%`;
+                }, 100);
+            });
+        }
+        
+        // 결과 공유
+        function shareResult() {
+            const type = calculateType();
+            const info = typeInfo[type];
+            const text = `🙏 나의 신앙유형은 "${info.nickname}" (${type})입니다!\n\n${info.emoji} ${info.description}\n\n나도 검사해보기 👉 [URL]`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: '신앙유형검사 결과',
+                    text: text
+                }).catch(err => console.log('공유 실패:', err));
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('📋 결과가 클립보드에 복사되었습니다!');
+                }).catch(() => {
+                    alert('공유 기능을 사용할 수 없습니다.');
+                });
+            }
+        }
+        
+        // 유형 계산 (공유용)
+        function calculateType() {
+            let type = '';
+            type += scores.R > scores.S ? 'R' : 'S';
+            type += scores.E > scores.W ? 'E' : 'W';
+            type += scores.D > scores.P ? 'D' : 'P';
+            type += scores.O > scores.F ? 'O' : 'F';
+            return type;
+        }
+        
+        // 다시 시작
+        function restartTest() {
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'flex';
+            window.scrollTo(0, 0);
+        }
+    </script>
 </body>
 </html>
