@@ -1,145 +1,264 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FATI 신앙유형검사</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; background: #f0f0f5; color: #333; }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    .question { margin-bottom: 30px; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .question h3 { margin-bottom: 10px; }
-    .options { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .label { width: 30%; font-size: 14px; }
-    .scale { display: flex; gap: 16px; justify-content: center; width: 40%; }
-    .scale input[type="radio"] { display: none; }
-    .scale label {
-      display: inline-block;
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #2c3e50;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .question-text {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .scale-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .scale-label {
+      font-size: 14px;
+      color: #495057;
+      max-width: 90%;
+      text-align: center;
+    }
+    .scale-options {
+      display: flex;
+      gap: 16px;
+    }
+    .dot {
+      width: 30px;
+      height: 30px;
+      background: #f1f3f5;
+      border: 2px solid #dee2e6;
       border-radius: 50%;
-      background: #ccc;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
-    .scale input[type="radio"]:checked + label {
-      background: #5b72ee;
-      color: white;
+    .dot:hover {
+      transform: scale(1.1);
     }
-    .scale label.large { width: 28px; height: 28px; }
-    .scale label.small { width: 18px; height: 18px; }
-    .navigation { text-align: center; margin: 30px 0; }
-    .navigation button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 8px; background: #5b72ee; color: white; cursor: pointer; }
-    .result { display: none; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-    .result h2 { margin-top: 0; }
-    .save-btn { margin-top: 20px; }
+    .dot.selected {
+      background: #5B72EE;
+      border-color: #4A5FDB;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .next-btn { background: #5B72EE; color: white; }
+    .prev-btn { background: #ced4da; color: #343a40; }
+    .result-section { display: none; margin-top: 40px; }
+    .score-bar-container {
+      height: 12px;
+      background: #dee2e6;
+      border-radius: 6px;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .score-bar-center {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #adb5bd;
+    }
+    .score-fill-left, .score-fill-right {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      transition: width 0.5s ease;
+    }
+    .score-fill-left {
+      right: 50%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 6px 0 0 6px;
+    }
+    .score-fill-right {
+      left: 50%;
+      background: linear-gradient(90deg, #764ba2, #667eea);
+      border-radius: 0 6px 6px 0;
+    }
+    .actions button {
+      width: 100%;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="testArea"></div>
-
+<div class="container">
+  <div id="testSection">
+    <div class="question-text" id="questionText"></div>
+    <div id="optionsContainer"></div>
     <div class="navigation">
-      <button onclick="submitAnswers()">결과 보기</button>
-    </div>
-
-    <div class="result" id="result">
-      <h2>📊 당신의 신앙유형 결과</h2>
-      <p id="typeCode"></p>
-      <div class="save-btn">
-        <button onclick="saveResultAsImage()">📸 결과 이미지 저장</button>
-      </div>
+      <button class="prev-btn" onclick="previousQuestion()">이전</button>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>다음</button>
     </div>
   </div>
 
-  <script>
-    const questions = [$1,
-  // 추가된 문항
-  {
-    text: '💰 교회 재정이나 헌금에 대해 내 마음은?',
-    left: { text: '공동체가 함께 사용하는 것이라 기꺼이 나누고 싶은 마음이다.', type: 'R' },
-    right: { text: '조용히 하나님 앞에서 결정하고 헌금은 개인적인 헌신이라고 생각한다.', type: 'S' }
-  },
-  {
-    text: '⏳ 재정이나 시간의 우선순위를 정할 때 기준은?',
-    left: { text: '마음속에서 하나님이 주신 감동이나 흐름을 따른다.', type: 'E' },
-    right: { text: '말씀을 통해 배우고 적용한 원칙을 중심으로 판단한다.', type: 'W' }
-  },
-  {
-    text: '🎁 하나님께 헌신을 결단할 때, 어떤 마음이 앞서는가?',
-    left: { text: '하나님께 사랑받고 있다는 감격이 헌신의 원동력이다.', type: 'D' },
-    right: { text: '하나님의 뜻에 순종하는 것이 당연하다는 책임감이 앞선다.', type: 'P' }
-  },
-  {
-    text: '🤲 헌금이나 봉사를 할 때의 나는?',
-    left: { text: '미리 계획하고 정해둔 방식대로 정기적으로 실천한다.', type: 'O' },
-    right: { text: '마음이 감동되었을 때 자발적으로 드리고 참여하는 편이다.', type: 'F' }
-  }];
+  <div class="result-section" id="resultSection">
+    <h2>🧠 당신의 신앙유형 결과</h2>
+    <div id="typeResult"></div>
+    <div id="scoreDetails"></div>
+    <div class="actions">
+      <button onclick="saveResultImage()">📸 결과 이미지 저장</button>
+      <button onclick="shareResult()">🔗 결과 링크 공유</button>
+      <button onclick="restartTest()">🔄 다시 검사하기</button>
+    </div>
+  </div>
+</div>
 
-    const scores = { R: 0, S: 0, E: 0, W: 0, D: 0, P: 0, O: 0, F: 0 };
+<script>
+  const questions = [...]; // 위에서 20문항으로 정리한 questions 배열 전체를 여기에 삽입
 
-    function renderQuestions() {
-      const testArea = document.getElementById('testArea');
-      questions.forEach((q, idx) => {
-        const qDiv = document.createElement('div');
-        qDiv.className = 'question';
+  let currentQuestion = 0;
+  let answers = [];
+  let scores = { R:0, S:0, E:0, W:0, D:0, P:0, O:0, F:0 };
 
-        qDiv.innerHTML = `<h3>Q${idx + 1}. ${q.text}</h3>
-          <div class="options">
-            <div class="label">${q.left.text}</div>
-            <div class="scale">
-              <input type="radio" id="q${idx}_4" name="q${idx}" value="4" data-type="${q.left.type}"><label class="large" for="q${idx}_4"></label>
-              <input type="radio" id="q${idx}_3" name="q${idx}" value="3" data-type="${q.left.type}"><label class="small" for="q${idx}_3"></label>
-              <input type="radio" id="q${idx}_2" name="q${idx}" value="2" data-type="${q.right.type}"><label class="small" for="q${idx}_2"></label>
-              <input type="radio" id="q${idx}_1" name="q${idx}" value="1" data-type="${q.right.type}"><label class="large" for="q${idx}_1"></label>
-            </div>
-            <div class="label">${q.right.text}</div>
-          </div>`;
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    document.getElementById('questionText').textContent = q.text;
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = `
+      <div class="scale-container">
+        <div class="scale-label left">${q.left.text}</div>
+        <div class="scale-options">
+          <div class="dot" data-score="1"></div>
+          <div class="dot" data-score="2"></div>
+          <div class="dot" data-score="3"></div>
+          <div class="dot" data-score="4"></div>
+        </div>
+        <div class="scale-label right">${q.right.text}</div>
+      </div>
+    `;
+    document.querySelectorAll('.dot').forEach(dot => {
+      dot.addEventListener('click', () => selectOption(parseInt(dot.dataset.score)));
+      if (answers[currentQuestion] == dot.dataset.score) dot.classList.add('selected');
+    });
+    document.getElementById('nextBtn').disabled = (answers[currentQuestion] === undefined);
+  }
 
-        testArea.appendChild(qDiv);
-      });
+  function selectOption(score) {
+    answers[currentQuestion] = score;
+    document.querySelectorAll('.dot').forEach(dot => {
+      dot.classList.remove('selected');
+      if (parseInt(dot.dataset.score) === score) dot.classList.add('selected');
+    });
+    document.getElementById('nextBtn').disabled = false;
+  }
+
+  function nextQuestion() {
+    if (currentQuestion < questions.length - 1) {
+      currentQuestion++;
+      loadQuestion();
+    } else {
+      calculateResult();
     }
+  }
 
-    function submitAnswers() {
-      for (let key in scores) scores[key] = 0;
-      let unanswered = 0;
-
-      questions.forEach((q, idx) => {
-        const selected = document.querySelector(`input[name="q${idx}"]:checked`);
-        if (!selected) {
-          unanswered++;
-        } else {
-          const score = parseInt(selected.value);
-          const type = selected.getAttribute('data-type');
-          scores[type] += score;
-        }
-      });
-
-      if (unanswered > 0) {
-        alert(`모든 문항에 응답해주세요. (${unanswered}개 미응답)`);
-        return;
-      }
-
-      const resultType =
-        (scores.R >= scores.S ? 'R' : 'S') +
-        (scores.E >= scores.W ? 'E' : 'W') +
-        (scores.D >= scores.P ? 'D' : 'P') +
-        (scores.O >= scores.F ? 'O' : 'F');
-
-      document.getElementById('typeCode').innerText = `유형 코드: ${resultType}`;
-      document.getElementById('result').style.display = 'block';
-      window.scrollTo(0, document.body.scrollHeight);
+  function previousQuestion() {
+    if (currentQuestion > 0) {
+      currentQuestion--;
+      loadQuestion();
     }
+  }
 
-    function saveResultAsImage() {
-      html2canvas(document.getElementById('result')).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'FATI_result.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
+  function calculateResult() {
+    scores = { R:0, S:0, E:0, W:0, D:0, P:0, O:0, F:0 };
+    answers.forEach((score, i) => {
+      const q = questions[i];
+      if (score === 1) scores[q.left.type] += 4;
+      if (score === 2) scores[q.left.type] += 3;
+      if (score === 3) scores[q.right.type] += 3;
+      if (score === 4) scores[q.right.type] += 4;
+    });
+    const type = `${scores.R > scores.S ? 'R' : 'S'}${scores.E > scores.W ? 'E' : 'W'}${scores.D > scores.P ? 'D' : 'P'}${scores.O > scores.F ? 'O' : 'F'}`;
+    document.getElementById('testSection').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
+    document.getElementById('typeResult').textContent = `🧩 당신의 유형은: ${type}`;
+    displayScores();
+  }
+
+  function displayScores() {
+    const pairs = [
+      ['R', 'S', '교제형(R)', '묵상형(S)'],
+      ['E', 'W', '체험형(E)', '말씀형(W)'],
+      ['D', 'P', '관계중심(D)', '원칙중심(P)'],
+      ['O', 'F', '정돈형(O)', '유연형(F)']
+    ];
+    const container = document.getElementById('scoreDetails');
+    container.innerHTML = '';
+    pairs.forEach(([left, right, lLabel, rLabel]) => {
+      const leftVal = scores[left];
+      const rightVal = scores[right];
+      const leftPct = (leftVal / 20) * 100;
+      const rightPct = (rightVal / 20) * 100;
+      const row = document.createElement('div');
+      row.innerHTML = `
+        <div class="score-labels">
+          <strong>${lLabel}</strong> vs <strong>${rLabel}</strong>
+        </div>
+        <div class="score-bar-container">
+          <div class="score-bar-center"></div>
+          <div class="score-fill-left" style="width: ${leftPct}%"></div>
+          <div class="score-fill-right" style="width: ${rightPct}%"></div>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  function saveResultImage() {
+    html2canvas(document.getElementById('resultSection')).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'fati_result.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+
+  function shareResult() {
+    const type = `${scores.R > scores.S ? 'R' : 'S'}${scores.E > scores.W ? 'E' : 'W'}${scores.D > scores.P ? 'D' : 'P'}${scores.O > scores.F ? 'O' : 'F'}`;
+    const text = `🙏 FATI 신앙유형검사 결과\n\n나의 유형: ${type}\n\n검사해보기 👉 [URL]`;
+    if (navigator.share) {
+      navigator.share({ title: 'FATI 검사', text: text });
+    } else {
+      navigator.clipboard.writeText(text).then(() => alert('결과가 복사되었습니다!'));
     }
+  }
 
-    renderQuestions();
-  </script>
+  function restartTest() {
+    currentQuestion = 0;
+    answers = [];
+    scores = { R:0, S:0, E:0, W:0, D:0, P:0, O:0, F:0 };
+    document.getElementById('resultSection').style.display = 'none';
+    document.getElementById('testSection').style.display = 'block';
+    loadQuestion();
+  }
+
+  // 시작
+  window.onload = loadQuestion;
+</script>
 </body>
 </html>
