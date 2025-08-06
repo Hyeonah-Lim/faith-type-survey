@@ -12,13 +12,21 @@
     .question h3 { margin-bottom: 10px; }
     .options { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .label { width: 30%; font-size: 14px; }
-    .scale { display: flex; gap: 10px; justify-content: center; width: 40%; }
+    .scale { display: flex; gap: 16px; justify-content: center; width: 40%; }
     .scale input[type="radio"] { display: none; }
     .scale label {
-      width: 20px; height: 20px; border-radius: 50%; background: #ccc;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      display: inline-block;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .scale input[type="radio"]:checked + label { background: #5b72ee; color: #fff; font-weight: bold; }
+    .scale input[type="radio"]:checked + label {
+      background: #5b72ee;
+      color: white;
+    }
+    .scale label.large { width: 28px; height: 28px; }
+    .scale label.small { width: 18px; height: 18px; }
     .navigation { text-align: center; margin: 30px 0; }
     .navigation button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 8px; background: #5b72ee; color: white; cursor: pointer; }
     .result { display: none; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
@@ -46,12 +54,11 @@
   <script>
     const questions = [
       {
-        category: '공동체 참여 성향',
         text: '🎵 성가대 연습에 10분 늦은 당신! 모두가 먼저 와 있고, 당신만 눈치 보며 들어간 상황에서…',
         left: { text: '가볍게 사과하고 주변에 자연스럽게 섞이는 편이다.', type: 'R' },
         right: { text: '누구도 말 안 걸었으면 하고 그냥 묵묵히 앉아있는 편이다.', type: 'S' }
-      },
-      // [... 추가 질문 23개 계속 ...]
+      }
+      // ...추가 문항 삽입 가능
     ];
 
     const scores = { R: 0, S: 0, E: 0, W: 0, D: 0, P: 0, O: 0, F: 0 };
@@ -66,10 +73,10 @@
           <div class="options">
             <div class="label">${q.left.text}</div>
             <div class="scale">
-              <input type="radio" id="q${idx}_4" name="q${idx}" value="4" data-type="${q.left.type}"><label for="q${idx}_4">4</label>
-              <input type="radio" id="q${idx}_3" name="q${idx}" value="3" data-type="${q.left.type}"><label for="q${idx}_3">3</label>
-              <input type="radio" id="q${idx}_2" name="q${idx}" value="2" data-type="${q.right.type}"><label for="q${idx}_2">2</label>
-              <input type="radio" id="q${idx}_1" name="q${idx}" value="1" data-type="${q.right.type}"><label for="q${idx}_1">1</label>
+              <input type="radio" id="q${idx}_4" name="q${idx}" value="4" data-type="${q.left.type}"><label class="large" for="q${idx}_4"></label>
+              <input type="radio" id="q${idx}_3" name="q${idx}" value="3" data-type="${q.left.type}"><label class="small" for="q${idx}_3"></label>
+              <input type="radio" id="q${idx}_2" name="q${idx}" value="2" data-type="${q.right.type}"><label class="small" for="q${idx}_2"></label>
+              <input type="radio" id="q${idx}_1" name="q${idx}" value="1" data-type="${q.right.type}"><label class="large" for="q${idx}_1"></label>
             </div>
             <div class="label">${q.right.text}</div>
           </div>`;
@@ -79,7 +86,6 @@
     }
 
     function submitAnswers() {
-      // 초기화
       for (let key in scores) scores[key] = 0;
       let unanswered = 0;
 
