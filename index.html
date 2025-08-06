@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>신앙유형검사 - 나만의 신앙 스타일 찾기</title>
+    <title>FATI 신앙유형검사 - Faith Attitude Type Indicator</title>
     <style>
         * {
             margin: 0;
@@ -59,6 +59,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        .catchphrase {
+            font-size: 16px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+        
         .logo {
             font-size: 80px;
             margin-bottom: 30px;
@@ -73,14 +81,48 @@
         .start-screen h1 {
             font-size: 36px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .start-screen .english-title {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            font-style: italic;
         }
         
         .start-screen .subtitle {
             font-size: 18px;
             opacity: 0.95;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             line-height: 1.6;
+        }
+        
+        .fati-explanation {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+            max-width: 400px;
+        }
+        
+        .fati-explanation h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .fati-explanation .fati-item {
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .fati-explanation .fati-item strong {
+            color: #FFE66D;
+            font-weight: 600;
         }
         
         .start-btn {
@@ -275,7 +317,7 @@
         
         .result-header {
             background: var(--background);
-            padding: 50px 20px 40px;
+            padding: 50px 20px 60px;
             padding-top: calc(50px + env(safe-area-inset-top));
             text-align: center;
             color: white;
@@ -320,7 +362,9 @@
         .type-nickname {
             font-size: 28px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
         }
         
         .result-content {
@@ -385,34 +429,72 @@
         }
         
         .score-row {
-            margin: 20px 0;
+            margin: 25px 0;
         }
         
         .score-labels {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-size: 14px;
         }
         
         .score-label {
             color: var(--text-light);
-            font-weight: 500;
+            font-weight: 600;
         }
         
-        .score-bar-bg {
-            height: 10px;
-            background: var(--gray-medium);
-            border-radius: 5px;
-            overflow: hidden;
+        .score-label.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .score-bar-container {
             position: relative;
+            height: 12px;
+            background: var(--gray-medium);
+            border-radius: 6px;
+            overflow: visible;
         }
         
-        .score-fill {
+        .score-bar-center {
+            position: absolute;
+            left: 50%;
+            top: -5px;
+            bottom: -5px;
+            width: 2px;
+            background: var(--text-light);
+            opacity: 0.3;
+            z-index: 1;
+        }
+        
+        .score-fill-left {
+            position: absolute;
+            right: 50%;
+            top: 0;
             height: 100%;
             background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 5px;
+            border-radius: 6px 0 0 6px;
             transition: width 1s ease;
+        }
+        
+        .score-fill-right {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #764ba2, #667eea);
+            border-radius: 0 6px 6px 0;
+            transition: width 1s ease;
+        }
+        
+        .score-percentage {
+            position: absolute;
+            top: -25px;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            transition: all 0.5s ease;
         }
         
         .actions {
@@ -498,14 +580,29 @@
     <div class="container">
         <!-- 시작 화면 -->
         <div class="start-screen" id="startScreen">
+            <div class="catchphrase">나만의 독특한 신앙 스타일을 발견해보세요</div>
             <div class="logo">🙏</div>
-            <h1>신앙유형검사</h1>
-            <div class="subtitle">
-                나만의 독특한 신앙 스타일을 발견해보세요<br>
-                16가지 유형으로 알아보는 나의 신앙 DNA
+            <h1>FATI 신앙유형검사</h1>
+            <div class="english-title">Faith Attitude Type Indicator</div>
+            
+            <div class="fati-explanation">
+                <h3>FATI란?</h3>
+                <div class="fati-item">
+                    <strong>F</strong>ellowship - 공동체 참여 성향 (R/S)
+                </div>
+                <div class="fati-item">
+                    <strong>A</strong>ffection - 신앙 표현 방식 (E/W)
+                </div>
+                <div class="fati-item">
+                    <strong>T</strong>heology - 하나님 인식 방식 (D/P)
+                </div>
+                <div class="fati-item">
+                    <strong>I</strong>ntention - 신앙생활 패턴 (O/F)
+                </div>
             </div>
+            
             <button class="start-btn" onclick="startTest()">시작하기</button>
-            <div style="margin-top: 40px; font-size: 14px; opacity: 0.8;">
+            <div style="margin-top: 30px; font-size: 14px; opacity: 0.8;">
                 ⏱ 약 5분 소요 | 📝 16문항
             </div>
         </div>
@@ -575,10 +672,10 @@
             </div>
             
             <div class="copyright">
-                <strong>신앙유형검사</strong><br>
+                <strong>FATI 신앙유형검사</strong><br>
                 Original Idea by <strong>문은성, 송은서</strong><br>
                 Developed by <strong>임현아</strong><br>
-                © 2024 All rights reserved
+                © 2025 All rights reserved
             </div>
         </div>
         
@@ -1090,33 +1187,64 @@
             container.innerHTML = '';
             
             const pairs = [
-                { labels: ['교제형(R)', '묵상형(S)'], values: [scores.R, scores.S] },
-                { labels: ['체험형(E)', '말씀형(W)'], values: [scores.E, scores.W] },
-                { labels: ['관계중심(D)', '원칙중심(P)'], values: [scores.D, scores.P] },
-                { labels: ['정돈형(O)', '유연형(F)'], values: [scores.O, scores.F] }
+                { 
+                    labels: ['교제형(R)', '묵상형(S)'], 
+                    values: [scores.R, scores.S],
+                    category: 'Fellowship'
+                },
+                { 
+                    labels: ['체험형(E)', '말씀형(W)'], 
+                    values: [scores.E, scores.W],
+                    category: 'Affection'
+                },
+                { 
+                    labels: ['관계중심(D)', '원칙중심(P)'], 
+                    values: [scores.D, scores.P],
+                    category: 'Theology'
+                },
+                { 
+                    labels: ['정돈형(O)', '유연형(F)'], 
+                    values: [scores.O, scores.F],
+                    category: 'Intention'
+                }
             ];
             
-            pairs.forEach(pair => {
-                const total = pair.values[0] + pair.values[1] || 1;
-                const percentage = (pair.values[0] / total) * 100;
+            pairs.forEach((pair, index) => {
+                const total = 4; // 각 카테고리당 4문항
+                const leftValue = pair.values[0];
+                const rightValue = pair.values[1];
+                const leftPercentage = (leftValue / total) * 50; // 최대 50%
+                const rightPercentage = (rightValue / total) * 50; // 최대 50%
                 
                 const row = document.createElement('div');
                 row.className = 'score-row';
                 row.innerHTML = `
                     <div class="score-labels">
-                        <span class="score-label">${pair.labels[0]}</span>
-                        <span class="score-label">${pair.labels[1]}</span>
+                        <span class="score-label ${leftValue > rightValue ? 'active' : ''}">${pair.labels[0]}</span>
+                        <span class="score-label ${rightValue > leftValue ? 'active' : ''}">${pair.labels[1]}</span>
                     </div>
-                    <div class="score-bar-bg">
-                        <div class="score-fill" style="width: ${percentage}%"></div>
+                    <div class="score-bar-container">
+                        <div class="score-bar-center"></div>
+                        ${leftValue > rightValue ? 
+                            `<div class="score-fill-left" style="width: 0%"></div>` :
+                            rightValue > leftValue ?
+                            `<div class="score-fill-right" style="width: 0%"></div>` :
+                            ''
+                        }
                     </div>
                 `;
                 container.appendChild(row);
                 
                 // 애니메이션 효과
                 setTimeout(() => {
-                    row.querySelector('.score-fill').style.width = `${percentage}%`;
-                }, 100);
+                    if (leftValue > rightValue) {
+                        const fillBar = row.querySelector('.score-fill-left');
+                        if (fillBar) fillBar.style.width = `${leftPercentage}%`;
+                    } else if (rightValue > leftValue) {
+                        const fillBar = row.querySelector('.score-fill-right');
+                        if (fillBar) fillBar.style.width = `${rightPercentage}%`;
+                    }
+                }, 100 + (index * 100));
             });
         }
         
@@ -1124,11 +1252,11 @@
         function shareResult() {
             const type = calculateType();
             const info = typeInfo[type];
-            const text = `🙏 나의 신앙유형은 "${info.nickname}" (${type})입니다!\n\n${info.emoji} ${info.description}\n\n나도 검사해보기 👉 [URL]`;
+            const text = `🙏 FATI 신앙유형검사 결과\n\n나의 유형: "${info.nickname}" (${type})\n\n${info.emoji} ${info.description}\n\n나도 검사해보기 👉 [URL]`;
             
             if (navigator.share) {
                 navigator.share({
-                    title: '신앙유형검사 결과',
+                    title: 'FATI 신앙유형검사 결과',
                     text: text
                 }).catch(err => console.log('공유 실패:', err));
             } else {
