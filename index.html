@@ -303,6 +303,13 @@
             z-index: 2;
             border: 2px solid var(--gray-medium);
         }
+
+        /* 원 크기 조절 */
+        .option-circle:nth-child(1),
+        .option-circle:nth-child(4) {
+            width: 56px;
+            height: 56px;
+        }
         
         .option-circle.selected {
             background: var(--primary);
@@ -828,8 +835,17 @@
         function selectOption(score) {
             const optionsContainer = document.getElementById('optionsContainer');
             const circles = optionsContainer.querySelectorAll('.option-circle');
-            circles.forEach(circle => circle.classList.remove('selected'));
+            circles.forEach(circle => {
+                circle.classList.remove('selected');
+                // 모든 원 크기를 원래대로 되돌립니다.
+                circle.style.width = '48px';
+                circle.style.height = '48px';
+            });
             circles[score - 1].classList.add('selected');
+
+            // 선택된 원의 크기를 확대합니다.
+            circles[score - 1].style.width = '56px';
+            circles[score - 1].style.height = '56px';
             
             userAnswers[currentQuestionIndex] = score;
             document.getElementById('nextBtn').disabled = false;
