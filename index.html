@@ -667,7 +667,7 @@
             }
         }
 
-        // 결과 이미지 다운로드 (개선된 버전)
+        // 결과 이미지 다운로드 (모바일 사이즈로 개선)
         async function downloadResultImage() {
             document.getElementById('loading').style.display = 'block';
             
@@ -676,31 +676,49 @@
             const typeCode = document.getElementById('typeCode').textContent;
             const result = resultTypes[typeCode];
             
+            // 카드 내용 채우기
             document.getElementById('cardEmoji').textContent = result.emoji;
             document.getElementById('cardTypeCode').textContent = typeCode;
             document.getElementById('cardNickname').textContent = result.nickname;
             document.getElementById('cardDescription').textContent = result.description;
             
+            // 주요 특징 리스트 추가
+            const cardTraitsList = document.getElementById('cardTraitsList');
+            cardTraitsList.innerHTML = '';
+            result.traits.forEach(trait => {
+                const li = document.createElement('li');
+                li.textContent = trait;
+                cardTraitsList.appendChild(li);
+            });
+            
             // 카드 표시
             resultCard.style.display = 'block';
             
+            // 잠시 대기 (렌더링 완료를 위해)
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             try {
                 const canvas = await html2canvas(resultCard, {
-                    scale: 2,
+                    scale: 2, // 고화질
                     useCORS: true,
                     logging: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    width: 390, // iPhone 기준 너비
+                    height: 844, // iPhone 기준 높이
+                    windowWidth: 390,
+                    windowHeight: 844
                 });
 
+                // 이미지 다운로드
                 const imageDataUrl = canvas.toDataURL('image/png');
                 const a = document.createElement('a');
                 a.href = imageDataUrl;
-                a.download = `FATI_${typeCode}_결과.png`;
+                a.download = `FATI_${typeCode}_${result.nickname}.png`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 
-                showMessage('결과 이미지가 다운로드되었습니다!', 'success');
+                showMessage('📱 결과 이미지가 저장되었습니다!', 'success');
             } catch (error) {
                 console.error('이미지 다운로드 실패:', error);
                 showMessage('이미지 다운로드에 실패했습니다.', 'error');
@@ -1163,64 +1181,132 @@
             animation: fadeIn 0.5s ease;
         }
         
-        /* 결과 카드 - 이미지 저장용 */
+        /* 결과 카드 - 이미지 저장용 (모바일 크기) */
         .result-card-for-image {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
+            top: 0;
+            left: 0;
+            width: 390px; /* iPhone 기준 너비 */
+            min-height: 844px; /* iPhone 기준 높이 */
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             z-index: 10000;
+            overflow: hidden;
         }
         
         .result-card-header {
             background: var(--background);
-            margin: -30px -30px 20px -30px;
-            padding: 30px;
-            border-radius: 20px 20px 0 0;
+            padding: 50px 20px 40px;
             text-align: center;
             color: white;
+            position: relative;
+        }
+        
+        .result-card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-radius: 30px 30px 0 0;
         }
         
         .result-card-header .emoji {
-            font-size: 60px;
-            margin-bottom: 15px;
+            font-size: 72px;
+            margin-bottom: 20px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
         }
         
         .result-card-header .type-code {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: 800;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         
         .result-card-header .nickname {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 600;
+            opacity: 0.95;
         }
         
         .result-card-body {
-            text-align: center;
+            padding: 40px 20px 30px;
+            position: relative;
+            z-index: 1;
         }
         
         .result-card-body .description {
-            color: var(--text-light);
-            line-height: 1.6;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-size: 15px;
+            text-align: center;
+            padding: 20px;
+            background: var(--gray-light);
+            border-radius: 16px;
+        }
+        
+        .result-card-body .traits-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
             margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .result-card-body .traits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .result-card-body .traits-list li {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: white;
+            border: 2px solid var(--gray-medium);
+            border-radius: 12px;
             font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        
+        .result-card-body .traits-list li::before {
+            content: '✨';
+            flex-shrink: 0;
+            font-size: 16px;
         }
         
         .result-card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
             text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid var(--gray-medium);
+            padding: 20px;
+            background: var(--gray-light);
             color: var(--text-light);
             font-size: 12px;
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .result-card-footer .footer-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-size: 14px;
         }
         
         .result-header {
@@ -1631,7 +1717,7 @@
             </div>
         </div>
         
-        <!-- 이미지 저장용 결과 카드 (숨김) -->
+        <!-- 이미지 저장용 결과 카드 (모바일 사이즈) -->
         <div class="result-card-for-image" id="resultCardForImage">
             <div class="result-card-header">
                 <div class="emoji" id="cardEmoji"></div>
@@ -1640,10 +1726,17 @@
             </div>
             <div class="result-card-body">
                 <p class="description" id="cardDescription"></p>
+                <div class="traits-title">
+                    <span>✨</span>
+                    <span>주요 특징</span>
+                    <span>✨</span>
+                </div>
+                <ul class="traits-list" id="cardTraitsList"></ul>
             </div>
             <div class="result-card-footer">
-                <strong>FATI 신앙유형검사</strong><br>
-                Faith Attitude Type Indicator
+                <div class="footer-title">FATI 신앙유형검사</div>
+                <div>Faith Attitude Type Indicator</div>
+                <div style="margin-top: 5px; font-size: 11px;">© 2025 문은성, 송은서, 임현아</div>
             </div>
         </div>
         
