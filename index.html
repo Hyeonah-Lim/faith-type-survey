@@ -252,7 +252,8 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-
+        
+        /* 원형 버튼들의 컨테이너 */
         .option-circle-container {
             display: flex;
             flex-direction: column;
@@ -264,10 +265,11 @@
             padding: 5px;
         }
         
+        /* 원형 버튼 자체의 스타일 */
         .option-circle {
             border-radius: 50%;
             background: var(--gray-light);
-            border: 2px solid var(--gray-medium);
+            border: 2px solid var(--gray-medium); /* 기본 테두리 색상 */
             width: var(--circle-large-size);
             height: var(--circle-large-size);
             display: flex;
@@ -276,26 +278,39 @@
             flex-shrink: 0;
             transition: all 0.2s;
         }
-        
+
         /* 작은 원형 버튼 스타일 */
         .option-circle.small {
             width: var(--circle-small-size);
             height: var(--circle-small-size);
         }
-        
+
         /* 선택된 옵션 스타일 */
         .options-scale input[type="radio"]:checked + .option-circle-container .option-circle {
             background: var(--secondary);
-            border-color: var(--secondary);
+            border-color: var(--secondary); /* 선택 시 테두리 색상도 변경 */
             transform: scale(1.1);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        
-        /* 선택된 텍스트 블록 스타일 (클릭 시 하이라이트) */
-        .option-text-area:active {
-            background-color: var(--gray-medium);
-        }
 
+        /* 각 원형 버튼에 대한 색상 스타일 */
+        .options-scale input[type="radio"]:nth-of-type(1) + .option-circle-container .option-circle {
+            background: rgba(91, 114, 238, 0.2); /* 왼쪽 버튼 배경색 */
+            border-color: var(--primary); /* 왼쪽 버튼 테두리색 */
+        }
+        .options-scale input[type="radio"]:nth-of-type(2) + .option-circle-container .option-circle {
+            background: rgba(91, 114, 238, 0.1);
+            border-color: var(--primary);
+        }
+        .options-scale input[type="radio"]:nth-of-type(3) + .option-circle-container .option-circle {
+            background: rgba(255, 107, 157, 0.1);
+            border-color: var(--secondary);
+        }
+        .options-scale input[type="radio"]:nth-of-type(4) + .option-circle-container .option-circle {
+            background: rgba(255, 107, 157, 0.2); /* 오른쪽 버튼 배경색 */
+            border-color: var(--secondary); /* 오른쪽 버튼 테두리색 */
+        }
+        
         /* 라디오 버튼 숨기기 */
         .options-scale input[type="radio"] {
             display: none;
@@ -667,7 +682,7 @@
                         </div>
                     <div class="option-text-area right-text" id="rightText" onclick="selectOptionByText(4)"></div>
                 </div>
-                </div>
+            </div>
             
             <div class="navigation">
                 <button class="nav-btn prev" id="prevBtn" onclick="previousQuestion()">이전</button>
@@ -1106,7 +1121,7 @@
                 description: '당신은 독립적인 신앙을 추구하며, 이성적인 사고를 통해 말씀의 원칙을 깊이 탐구합니다. 하나님을 주권자로 인식하며, 철저하고 체계적인 신앙생활을 통해 믿음을 굳건히 지켜나가는 유형입니다.',
                 traits: [
                     '공동체보다는 개인적인 신앙생활을 더 선호하며, 혼자서도 흔들리지 않는 믿음을 가집니다.',
-                    '논리적이고 분석적인 사고로 말씀을 깊이 묵상하고 신앙의 원리를 세워나갑니다.',
+                    '논리적이고 분석적인 방식으로 말씀을 깊이 묵상하고 신앙의 원리를 세워나갑니다.',
                     '하나님의 공의와 권위를 인정하며, 그분의 말씀에 순종하는 것을 삶의 최우선으로 여깁니다.',
                     '말씀 통독, 기도, 봉사 등을 계획적으로 실천하며, 스스로에게 엄격한 기준을 적용합니다.'
                 ],
