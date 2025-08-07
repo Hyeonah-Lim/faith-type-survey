@@ -198,12 +198,12 @@
         .question-container {
             padding: 30px 20px;
             padding-bottom: 120px; /* 하단 네비게이션 버튼 공간 확보 */
-            display: flex; /* flex 컨테이너로 설정 */
-            flex-direction: column; /* 자식 요소를 세로로 정렬 */
-            align-items: center; /* 가로 중앙 정렬 */
-            justify-content: center; /* 세로 중앙 정렬 */
-            min-height: calc(100vh - 180px); /* 헤더+네비게이션 제외한 최소 높이 */
-            text-align: center; /* 내부 텍스트도 중앙 정렬 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 180px);
+            text-align: center;
         }
         
         .question-number {
@@ -219,95 +219,86 @@
             line-height: 1.5;
             margin-bottom: 30px;
             color: var(--text-dark);
-            text-align: center; /* 질문 텍스트 중앙 정렬 */
-            max-width: 90%; /* 너무 길어지지 않도록 */
+            text-align: center;
+            max-width: 90%;
         }
         
-        /* 질문 선택지 레이아웃 수정 (4단계 척도) */
+        /* 질문 선택지 레이아웃 (개선된 부분) */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
         .options-scale {
-            display: flex; /* Flexbox 사용 */
-            align-items: center; /* 세로 중앙 정렬 (원과 텍스트 모두) */
-            justify-content: space-between; /* 요소 간 균등 분배 */
-            gap: 10px; /* 요소 간 간격 */
-            flex-wrap: nowrap; /* 기본적으로 줄바꿈 방지 (데스크톱) */
-            padding: 0 10px; /* 좌우 패딩 */
-            max-width: 600px; /* 너비 제한 */
-            margin: 0 auto; /* 중앙 정렬 */
-            width: 100%; /* 부모 너비에 맞춤 */
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 400px;
         }
-
-        .options-scale .option-text-wrapper {
-            flex-basis: 30%; /* 텍스트 영역이 차지할 공간 (조정 가능) */
-            flex-shrink: 1; /* 필요시 줄어들 수 있도록 */
+        
+        .option-text-area {
+            width: 100%;
+            padding: 15px;
+            font-size: 15px;
+            line-height: 1.6;
+            border-radius: 12px;
+            background-color: var(--gray-light);
+            border: 1px solid var(--gray-medium);
             text-align: center;
-            font-size: 14px;
-            color: var(--text-light);
-            line-height: 1.4;
-            display: flex; /* 텍스트를 세로 중앙 정렬하기 위해 flex 사용 */
-            align-items: center;
-            justify-content: center;
-            min-height: var(--circle-large-size); /* 텍스트 영역 최소 높이로 고정 */
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        /* 원형 버튼들을 감싸는 새로운 래퍼 */
-        .options-scale .circle-wrapper {
+        .option-circle-container {
             display: flex;
-            align-items: center;
-            justify-content: center; /* 원형 버튼들을 중앙 정렬 */
-            flex-grow: 1; /* 남은 공간을 채우도록 성장 */
-            gap: 10px; /* 원형 버튼들 간의 간격 */
-        }
-
-        .options-scale .option-circle-container {
-            display: flex;
-            flex-direction: column; /* 원형 버튼과 텍스트를 세로로 정렬 */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-basis: 0; /* 초기 너비 0 */
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            padding: 5px; /* 컨테이너 내부 패딩 */
+            padding: 5px;
         }
-
-        .options-scale .option-circle {
+        
+        .option-circle {
             border-radius: 50%;
             background: var(--gray-light);
             border: 2px solid var(--gray-medium);
+            width: var(--circle-large-size);
+            height: var(--circle-large-size);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0; /* 크기 줄어들지 않도록 */
+            flex-shrink: 0;
             transition: all 0.2s;
         }
-
-        /* 큰 원형 버튼 스타일 */
-        .options-scale .option-circle.large {
-            width: var(--circle-large-size);
-            height: var(--circle-large-size);
-        }
-
+        
         /* 작은 원형 버튼 스타일 */
-        .options-scale .option-circle.small {
+        .option-circle.small {
             width: var(--circle-small-size);
             height: var(--circle-small-size);
         }
-
+        
         /* 선택된 옵션 스타일 */
         .options-scale input[type="radio"]:checked + .option-circle-container .option-circle {
-            background: var(--secondary); /* 선택 시 색상 */
+            background: var(--secondary);
             border-color: var(--secondary);
-            transform: scale(1.1); /* 선택 시 약간 커지게 */
+            transform: scale(1.1);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-
-        .options-scale input[type="radio"] {
-            display: none; /* 실제 라디오 버튼 숨김 */
+        
+        /* 선택된 텍스트 블록 스타일 (클릭 시 하이라이트) */
+        .option-text-area:active {
+            background-color: var(--gray-medium);
         }
 
-        /* 호버 효과 */
-        .options-scale .option-circle-container:hover .option-circle {
-            background: var(--gray-medium);
+        /* 라디오 버튼 숨기기 */
+        .options-scale input[type="radio"] {
+            display: none;
         }
         
         .navigation {
@@ -619,44 +610,12 @@
 
         /* 모바일 반응형 디자인 (767px 이하) */
         @media (max-width: 767px) {
+            .options-container {
+                gap: 10px;
+            }
             .options-scale {
-                flex-direction: row; /* 텍스트와 원형 버튼 묶음을 가로로 정렬 */
-                align-items: center; /* 세로 중앙 정렬 */
-                justify-content: space-between; /* 요소들을 양 끝으로 분산 */
-                padding: 0 5px;
-                width: 100%;
-            }
-            
-            .options-scale .option-text-wrapper {
-                flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
-                text-align: center;
-                padding: 5px; /* 내부 패딩 추가 */
-                min-height: auto; /* 최소 높이 제거 */
-                font-size: 13px; /* 폰트 크기 조정 */
-            }
-
-            .options-scale .option-text-wrapper.left {
-                text-align: left; /* 왼쪽 선지 텍스트 왼쪽 정렬 */
-            }
-
-            .options-scale .option-text-wrapper.right {
-                text-align: right; /* 오른쪽 선지 텍스트 오른쪽 정렬 */
-            }
-
-            .options-scale .circle-wrapper {
-                flex: 0 0 auto; /* 크기 유지를 위해 flex-grow, shrink를 0으로 설정 */
-                justify-content: center; /* 버튼들을 중앙 정렬 */
-                gap: 8px;
-            }
-
-            /* 모바일에서 원형 버튼 크기 조정 */
-            .options-scale .option-circle.large {
-                width: 55px;
-                height: 55px;
-            }
-            .options-scale .option-circle.small {
-                width: 35px;
-                height: 35px;
+                justify-content: center;
+                gap: 10px;
             }
         }
     </style>
@@ -701,9 +660,14 @@
             <div class="question-container">
                 <div class="question-number" id="questionNumber"></div>
                 <div class="question-text" id="questionText"></div>
-                <div class="options-scale" id="optionsContainer">
-                    </div>
-            </div>
+                
+                <div class="options-container">
+                    <div class="option-text-area left-text" id="leftText" onclick="selectOptionByText(1)"></div>
+                    <div class="options-scale" id="optionsContainer">
+                        </div>
+                    <div class="option-text-area right-text" id="rightText" onclick="selectOptionByText(4)"></div>
+                </div>
+                </div>
             
             <div class="navigation">
                 <button class="nav-btn prev" id="prevBtn" onclick="previousQuestion()">이전</button>
@@ -1132,7 +1096,7 @@
                     '하나님을 친밀하고 사랑이 많은 분으로 인식하며, 내면의 자유와 평안을 추구합니다.',
                     '정해진 규칙 없이 마음이 이끄는 대로 신앙을 실천하는 것을 편안하게 생각합니다.'
                 ],
-                growth: '때로는 계획을 세워 신앙생활을 꾸준히 실천하는 노력이 필요합니다. 공동체 안에서 여러 사람들과 교제하며 자신의 믿음을 점검하는 것도 중요합니다.',
+                growth: '때로는 계획을 세워 신앙생활을 꾸준히 실천하는 노력이 필요합니다. 공동체와 교제하며 자신의 믿음을 점검하는 것도 중요합니다.',
                 compatibility: '계획적이고 조직적인 O 유형, 그리고 관계 지향적인 R 유형과 함께하면 더 균형 잡힌 신앙생활을 할 수 있습니다.'
             },
             // S W P O (독립-이성-원칙중심-정돈)
@@ -1179,6 +1143,8 @@
         const optionsContainer = document.getElementById('optionsContainer');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const leftTextElem = document.getElementById('leftText');
+        const rightTextElem = document.getElementById('rightText');
 
         // 테스트 시작 함수
         function startTest() {
@@ -1195,21 +1161,15 @@
             questionNumberElem.innerText = `${index + 1} / ${questions.length}`;
             questionTextElem.innerText = question.text;
             
-            // 옵션 컨테이너 비우고 다시 그리기
+            // 텍스트를 별도 영역에 넣어줍니다.
+            leftTextElem.innerText = question.leftText;
+            rightTextElem.innerText = question.rightText;
+
+            // 라디오 버튼을 동적으로 생성
             optionsContainer.innerHTML = '';
             
-            // 왼쪽 텍스트 래퍼 생성
-            const leftTextWrapper = document.createElement('div');
-            leftTextWrapper.className = 'option-text-wrapper left';
-            leftTextWrapper.innerText = question.leftText;
-            optionsContainer.appendChild(leftTextWrapper);
-            
-            // 원형 버튼 래퍼 생성
-            const circleWrapper = document.createElement('div');
-            circleWrapper.className = 'circle-wrapper';
-            
             for (let i = 1; i <= 4; i++) {
-                const optionContainer = document.createElement('label'); // label로 변경하여 접근성 향상
+                const optionContainer = document.createElement('label');
                 optionContainer.htmlFor = `q${index}_opt${i}`;
                 optionContainer.className = 'option-circle-container';
                 
@@ -1218,7 +1178,7 @@
                 radio.name = 'question' + index;
                 radio.id = `q${index}_opt${i}`;
                 radio.value = i;
-                radio.checked = answers[index] === i; // 이전에 선택된 값 반영
+                radio.checked = answers[index] === i;
                 radio.onchange = () => selectOption(i);
                 
                 const circle = document.createElement('div');
@@ -1226,15 +1186,8 @@
                 optionContainer.appendChild(radio);
                 optionContainer.appendChild(circle);
                 
-                circleWrapper.appendChild(optionContainer);
+                optionsContainer.appendChild(optionContainer);
             }
-            optionsContainer.appendChild(circleWrapper);
-
-            // 오른쪽 텍스트 래퍼 생성
-            const rightTextWrapper = document.createElement('div');
-            rightTextWrapper.className = 'option-text-wrapper right';
-            rightTextWrapper.innerText = question.rightText;
-            optionsContainer.appendChild(rightTextWrapper);
 
             // 이전/다음 버튼 상태 업데이트
             prevBtn.disabled = currentQuestion === 0;
@@ -1243,11 +1196,16 @@
             // 진행률 바 업데이트
             progressBar.style.width = `${((index + 1) / questions.length) * 100}%`;
         }
-
+        
         // 옵션 선택 시 호출되는 함수
         function selectOption(value) {
             answers[currentQuestion] = value;
             nextBtn.disabled = false;
+        }
+
+        // 텍스트를 클릭했을 때 옵션 선택
+        function selectOptionByText(value) {
+            document.getElementById(`q${currentQuestion}_opt${value}`).click();
         }
 
         // 다음 질문으로 이동
