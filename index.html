@@ -25,9 +25,7 @@
             --text-light: #495057;
             --gray-light: #f8f9fa;
             --gray-medium: #e9ecef;
-            --circle-large-size: 60px; /* 양 끝의 큰 원 */
-            --circle-medium-size: 50px; /* 가운데 원 */
-            --circle-small-size: 40px; /* 이전 코드에서 사용하던 작은 원을 대체 */
+            --circle-size: 50px; /* 모든 원의 크기 동일 */
 
             /* 새로 추가된 색상 변수 */
             --color-blue: #667eea;
@@ -143,7 +141,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: var(--circle-large-size);
+            min-height: var(--circle-size);
         }
 
         .options-scale .circle-wrapper {
@@ -175,13 +173,10 @@
             justify-content: center;
             flex-shrink: 0;
             transition: all 0.2s;
+            width: var(--circle-size);
+            height: var(--circle-size);
         }
 
-        /* 양 끝의 큰 원형 버튼 스타일 */
-        .options-scale .option-circle.large { width: var(--circle-large-size); height: var(--circle-large-size); }
-        /* 가운데의 작은 원형 버튼 스타일 */
-        .options-scale .option-circle.small { width: var(--circle-medium-size); height: var(--circle-medium-size); }
-        
         /* 선택된 옵션 스타일 (색상 변경) */
         .options-scale input[type="radio"]:checked + .option-circle-container .option-circle {
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -260,8 +255,8 @@
             .options-scale { flex-direction: column; align-items: center; gap: 15px; padding: 0 5px; }
             .options-scale .option-text-wrapper { width: 100%; flex-basis: auto; min-height: auto; text-align: center; padding: 0 10px; }
             .options-scale .circle-wrapper { width: 100%; justify-content: center; gap: 8px; }
-            .options-scale .option-circle.large { width: 55px; height: 55px; }
-            .options-scale .option-circle.small { width: 45px; height: 45px; }
+            .options-scale .option-circle.large { width: var(--circle-size); height: var(--circle-size); }
+            .options-scale .option-circle.small { width: var(--circle-size); height: var(--circle-size); }
         }
     </style>
 </head>
@@ -451,19 +446,19 @@
                 <div class="circle-wrapper">
                     <label class="option-circle-container">
                         <input type="radio" name="option-${currentQuestionIndex}" value="1" class="left-option">
-                        <div class="option-circle large"></div>
+                        <div class="option-circle"></div>
                     </label>
                     <label class="option-circle-container">
                         <input type="radio" name="option-${currentQuestionIndex}" value="2" class="left-option">
-                        <div class="option-circle small"></div>
+                        <div class="option-circle"></div>
                     </label>
                     <label class="option-circle-container">
                         <input type="radio" name="option-${currentQuestionIndex}" value="3" class="right-option">
-                        <div class="option-circle small"></div>
+                        <div class="option-circle"></div>
                     </label>
                     <label class="option-circle-container">
                         <input type="radio" name="option-${currentQuestionIndex}" value="4" class="right-option">
-                        <div class="option-circle large"></div>
+                        <div class="option-circle"></div>
                     </label>
                 </div>
                 <div class="option-text-wrapper right-text">
