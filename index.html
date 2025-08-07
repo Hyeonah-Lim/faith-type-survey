@@ -223,21 +223,14 @@
             max-width: 90%;
         }
         
-        /* 질문 선택지 레이아웃 (개선된 부분) */
+        /* 옵션 컨테이너 수정 */
         .options-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
             width: 100%;
             max-width: 600px;
-        }
-        
-        .options-scale {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            max-width: 400px;
+            gap: 20px;
         }
         
         .option-text-area {
@@ -251,6 +244,19 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
+        }
+
+        .arrow-container {
+            font-size: 24px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .options-scale {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 400px;
         }
         
         /* 원형 버튼들의 컨테이너 */
@@ -678,8 +684,16 @@
                 
                 <div class="options-container">
                     <div class="option-text-area left-text" id="leftText" onclick="selectOptionByText(1)"></div>
+                    
+                    <div class="arrow-container">
+                        <div class="option-title" id="leftTitle">관계 지향</div>
+                        ↔️
+                        <div class="option-title" id="rightTitle">독립 지향</div>
+                    </div>
+                    
                     <div class="options-scale" id="optionsContainer">
                         </div>
+                    
                     <div class="option-text-area right-text" id="rightText" onclick="selectOptionByText(4)"></div>
                 </div>
             </div>
@@ -1076,7 +1090,7 @@
             'SEPF': {
                 emoji: '🔥',
                 nickname: '홀로 불타는 성령의 불꽃',
-                description: '당신은 독립적으로 신앙을 추구하며, 감정적이고 뜨거운 경험을 중요하게 여깁니다. 하나님을 주권자로 인식하면서도 형식에 얽매이지 않는 자유로운 신앙을 가진 유형입니다.',
+                description: '당신은 독립적으로 신앙을 추구하며, 감정적이고 뜨거운 경험을 중요하게 여깁니다. 하나님을 주권자로 인식하지만, 형식에 얽매이지 않는 자유로운 신앙을 가진 유형입니다.',
                 traits: [
                     '혼자서 깊은 기도와 묵상을 하는 것을 좋아합니다.',
                     '찬양과 예배를 통해 뜨거운 감동과 성령의 임재를 경험하길 갈망합니다.',
@@ -1144,6 +1158,15 @@
             }
         };
 
+        // 각 유형별 타이틀
+        const typeTitles = {
+            'R': '관계 지향', 'S': '독립 지향',
+            'E': '감정/경험 지향', 'W': '이성/원리 지향',
+            'D': '관계/친밀함 지향', 'P': '권위/주권 지향',
+            'O': '조직/계획 지향', 'F': '유연/자유 지향'
+        };
+
+
         let currentQuestion = 0;
         let answers = []; // 사용자의 답변을 저장할 배열
 
@@ -1160,6 +1183,8 @@
         const nextBtn = document.getElementById('nextBtn');
         const leftTextElem = document.getElementById('leftText');
         const rightTextElem = document.getElementById('rightText');
+        const leftTitleElem = document.getElementById('leftTitle');
+        const rightTitleElem = document.getElementById('rightTitle');
 
         // 테스트 시작 함수
         function startTest() {
@@ -1176,9 +1201,13 @@
             questionNumberElem.innerText = `${index + 1} / ${questions.length}`;
             questionTextElem.innerText = question.text;
             
-            // 텍스트를 별도 영역에 넣어줍니다.
             leftTextElem.innerText = question.leftText;
             rightTextElem.innerText = question.rightText;
+            
+            // 타입 타이틀을 가져와서 표시
+            leftTitleElem.innerText = typeTitles[question.leftType];
+            rightTitleElem.innerText = typeTitles[question.rightType];
+            
 
             // 라디오 버튼을 동적으로 생성
             optionsContainer.innerHTML = '';
