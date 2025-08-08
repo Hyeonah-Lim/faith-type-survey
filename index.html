@@ -1,4 +1,787 @@
-<!DOCTYPE html>
+<p style="margin-top: 15px; color: var(--text-dark);">처리 중입니다...</p>
+        </div>
+    </div>
+    
+    <script>
+        // 문항 데이터
+        const questions = [
+            // 공동체 참여 성향 (R/S)
+            {
+                category: '공동체 참여 성향',
+                text: '🎵 성가대 연습에 10분 늦은 당신! 모두가 먼저 와 있고, 당신만 눈치 보며 들어간 상황에서…',
+                leftText: '가볍게 사과하고 주변에 자연스럽게 섞이는 편이다.',
+                rightText: '누구도 말 안 걸었으면 하고 그냥 묵묵히 앉아있는 편이다.',
+                leftType: 'R',
+                rightType: 'S'
+            },
+            {
+                category: '공동체 참여 성향',
+                text: '🙋 청년부에 새로 온 지체가 혼자 앉아있다.',
+                leftText: '반가운 마음으로 먼저 다가가 말을 건넨다.',
+                rightText: '어색해서 다가가긴 어렵지만 조용히 관심을 갖고 기회가 되면 개인적으로 대화한다.',
+                leftType: 'R',
+                rightType: 'S'
+            },
+            {
+                category: '공동체 참여 성향',
+                text: '📆 수련회에 참석하게 된 당신, 가장 기대하는 것은?',
+                leftText: '많은 사람들과 함께 뜨거운 예배를 드리는 것',
+                rightText: '혼자만의 시간에 뜨겁게 기도하는 것',
+                leftType: 'R',
+                rightType: 'S'
+            },
+            {
+                category: '공동체 참여 성향',
+                text: '🧠 신앙적인 고민이 깊어진 시기, 당신은?',
+                leftText: '신앙 친구들과 나누며 함께 기도한다.',
+                rightText: '혼자 하나님께 기도하며 답을 구한다.',
+                leftType: 'R',
+                rightType: 'S'
+            },
+            {
+                category: '공동체 참여 성향',
+                text: '❓ 교회 재정이나 헌금에 대해 내 마음은?',
+                leftText: '공동체가 함께 사용하는 것이라 기꺼이 나누고 싶은 마음이다.',
+                rightText: '조용히 하나님 앞에서 결정하고 헌금은 개인적인 헌신이라고 생각한다.',
+                leftType: 'R',
+                rightType: 'S'
+            },
+            // 신앙 표현방식 (E/W)
+            {
+                category: '신앙 표현방식',
+                text: '🎤 썸워십에 참석한 당신, 어떤 스타일인가요?',
+                leftText: '몸으로 표현하며 감정이 우러나는 찬양을 좋아한다',
+                rightText: '가사의 의미를 생각하며 조용히 마음으로 부른다',
+                leftType: 'E',
+                rightType: 'W'
+            },
+            {
+                category: '신앙 표현방식',
+                text: '📖 말씀 듣는 중, 당신의 자세는?',
+                leftText: '말씀을 통해 받은 감동과 느낌을 중심으로 정리한다.',
+                rightText: '논리적 흐름과 단어의 뜻을 구조적으로 정리한다.',
+                leftType: 'E',
+                rightType: 'W'
+            },
+            {
+                category: '신앙 표현방식',
+                text: '🙏 기도응답을 경험했을 때',
+                leftText: '하나님이 살아계심을 느꼈다는 체험에 집중한다.',
+                rightText: '하나님의 뜻이 무엇인지 깨달은 것에 집중한다.',
+                leftType: 'E',
+                rightType: 'W'
+            },
+            {
+                category: '신앙 표현방식',
+                text: '💬 수련회 이후, 목장 사람들과 함께 간증 나눔을 하게 된 당신',
+                leftText: '하나님을 경험한 순간의 감정과 느낌을 자세히 나눈다',
+                rightText: '하나님이 어떤 방법으로 역사하셨는지 사실 중심으로 나눈다',
+                leftType: 'E',
+                rightType: 'W'
+            },
+            {
+                category: '신앙 표현방식',
+                text: '💰 재정이나 시간의 우선순위를 정할 때 기준은?',
+                leftText: '마음속에서 하나님이 주신 감동이나 흐름을 따른다.',
+                rightText: '말씀을 통해 배우고 적용한 원칙을 중심으로 판단한다.',
+                leftType: 'E',
+                rightType: 'W'
+            },
+            // 하나님 인식방식 (D/P)
+            {
+                category: '하나님 인식방식',
+                text: '📖 성경을 읽을 때 가장 먼저 드는 감정은?',
+                leftText: '하나님이 내게 말 걸어 주시는 듯한 친밀감을 느끼는 편이다',
+                rightText: '하나님의 명령과 기준이 무엇인지 찾는 편이다',
+                leftType: 'D',
+                rightType: 'P'
+            },
+            {
+                category: '하나님 인식방식',
+                text: '🙏 기도할 때, 당신은 하나님을 어떻게 그리는가?',
+                leftText: '내가 힘들 때 안아 주시는 따뜻한 분',
+                rightText: '내 삶을 판단하고 이끄시는 기준이자 주권자',
+                leftType: 'D',
+                rightType: 'P'
+            },
+            {
+                category: '하나님 인식방식',
+                text: '🧭 믿음의 결정을 내려야 할 때, 당신은?',
+                leftText: '마음에 평안이 있는지를 중심으로 분별한다.',
+                rightText: '말씀의 기준에 맞는지를 따져본다.',
+                leftType: 'D',
+                rightType: 'P'
+            },
+            {
+                category: '하나님 인식방식',
+                text: '✝️ 신앙생활의 주된 동기는',
+                leftText: '하나님과의 더 깊은 사랑의 관계를 위해',
+                rightText: '하나님이 기뻐하시는 올바른 삶을 살기 위해',
+                leftType: 'D',
+                rightType: 'P'
+            },
+            {
+                category: '하나님 인식방식',
+                text: '🙌 하나님께 헌신을 결단할 때, 어떤 마음이 앞서는가?',
+                leftText: '하나님께 사랑받고 있다는 감격이 헌신의 원동력이다.',
+                rightText: '하나님의 뜻에 순종하는 것이 당연하다는 책임감이 앞선다.',
+                leftType: 'D',
+                rightType: 'P'
+            },
+            // 신앙생활 패턴 (O/F)
+            {
+                category: '신앙생활 패턴',
+                text: '📆 수련회 전날 밤, 당신은?',
+                leftText: '짐, 일정, 말씀 다 정리하고 기도까지 마친 상태다.',
+                rightText: '마음 가는 대로 내일 아침에 짐 싸도 괜찮다.',
+                leftType: 'O',
+                rightType: 'F'
+            },
+            {
+                category: '신앙생활 패턴',
+                text: '📖 성경 읽기를 시작하려는 당신.',
+                leftText: '계획표를 세워 하루 분량을 지키려고 노력하는 편이다.',
+                rightText: '마음에 끌리는 본문 위주로 자유롭게 읽는 편이다.',
+                leftType: 'O',
+                rightType: 'F'
+            },
+            {
+                category: '신앙생활 패턴',
+                text: '📝 기도제목을 기록하는 방식은?',
+                leftText: '날짜별로 정리된 노트나 앱을 사용하는 편이다.',
+                rightText: '떠오를 때 간단히 메모하는 편이다.',
+                leftType: 'O',
+                rightType: 'F'
+            },
+            {
+                category: '신앙생활 패턴',
+                text: '⛪ 신앙생활을 실천하는 나만의 방식은?',
+                leftText: '신앙생활은 계획적으로 실천하는 것이 중요하다고 생각한다.',
+                rightText: '신앙생활은 흐름에 따라 자연스럽게 이어지는 것이 더 의미 있다고 생각한다.',
+                leftType: 'O',
+                rightType: 'F'
+            },
+            {
+                category: '신앙생활 패턴',
+                text: '🎁 헌금이나 봉사를 할 때의 나는?',
+                leftText: '미리 계획하고 정해둔 방식대로 정기적으로 실천한다.',
+                rightText: '마음이 감동되었을 때 자발적으로 드리고 참여하는 편이다.',
+                leftType: 'O',
+                rightType: 'F'
+            }
+        ];
+
+        // 유형별 결과 설명
+        const resultTypes = {
+            'REDO': {
+                emoji: '💖',
+                nickname: '사랑 넘치는 공동체 리더',
+                description: '당신은 공동체 속에서 사랑과 감정으로 신앙을 표현하며, 하나님과의 친밀한 관계를 통해 삶을 계획하고 실천하는 유형입니다.',
+                traits: [
+                    '공동체 활동에 적극적으로 참여하고 사람들과의 관계를 중요하게 생각합니다.',
+                    '감성적이고 경험을 중시하며, 찬양과 기도를 통해 깊은 감동을 받습니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식하며, 그분과의 관계에서 평안을 찾습니다.',
+                    '신앙생활을 계획하고 실천하는 데 있어 열정과 감동이 큰 동기가 됩니다.'
+                ],
+                growth: '때로는 계획을 세우기보다 하나님의 이끄심에 유연하게 반응하는 연습이 필요합니다.',
+                compatibility: '이성적이고 원리 중심적인 W 유형과 잘 맞습니다.'
+            },
+            'REDF': {
+                emoji: '🌊',
+                nickname: '자유로운 사랑의 파도',
+                description: '당신은 공동체 속에서 사랑을 나누고 감정적으로 신앙을 표현하며, 하나님과의 친밀한 관계 속에서 자유롭게 헌신하는 유형입니다.',
+                traits: [
+                    '공동체 활동에 적극적으로 참여하고 사람들과의 관계에서 에너지를 얻습니다.',
+                    '감성적이고 경험을 중시하며, 찬양과 기도를 통해 깊은 감동을 표현합니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식합니다.',
+                    '신앙생활을 마음의 감동에 따라 자발적으로 실천합니다.'
+                ],
+                growth: '때로는 체계적인 신앙생활을 위해 계획을 세우는 연습도 필요합니다.',
+                compatibility: '계획적이고 조직적인 O 유형과 함께할 때 균형을 이룰 수 있습니다.'
+            },
+            'REPO': {
+                emoji: '🌈',
+                nickname: '감격의 무지개',
+                description: '당신은 공동체 안에서 감정적으로 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 계획적인 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '공동체 활동에 적극적으로 참여합니다.',
+                    '감성적이고 경험을 중시합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 계획적으로 실천합니다.'
+                ],
+                growth: '하나님과의 개인적이고 친밀한 관계도 더욱 깊어질 수 있도록 노력해보세요.',
+                compatibility: '유연하고 자유로운 F 유형과 잘 맞습니다.'
+            },
+            'REPF': {
+                emoji: '🌻',
+                nickname: '자유로운 감성의 꽃',
+                description: '당신은 공동체 안에서 감정적으로 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 유연하게 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '공동체 활동에 적극적으로 참여합니다.',
+                    '감성적이고 경험을 중시합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 마음의 감동에 따라 자발적으로 실천합니다.'
+                ],
+                growth: '꾸준하고 체계적인 신앙생활을 위해 계획을 세우는 연습도 필요합니다.',
+                compatibility: '계획적이고 조직적인 O 유형과 함께할 때 균형을 이룰 수 있습니다.'
+            },
+            'RWDO': {
+                emoji: '🔍',
+                nickname: '탐구하는 지식의 샘',
+                description: '당신은 관계를 중시하고 이성적으로 신앙을 표현하며, 하나님과의 친밀한 관계를 통해 삶을 계획하고 실천하는 유형입니다.',
+                traits: [
+                    '공동체 안에서 지적인 교류를 즐깁니다.',
+                    '말씀의 논리적 흐름과 의미를 깊이 탐구합니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식합니다.',
+                    '신앙생활을 계획적이고 규칙적으로 실천합니다.'
+                ],
+                growth: '감성적으로 경험하는 것에 마음을 열어보세요.',
+                compatibility: '감성적이고 관계 지향적인 E 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'RWDF': {
+                emoji: '🌬️',
+                nickname: '고요한 성찰의 바람',
+                description: '당신은 관계를 중시하고 이성적으로 신앙을 표현하며, 하나님과의 친밀한 관계 속에서 자유롭게 헌신하는 유형입니다.',
+                traits: [
+                    '공동체와의 관계를 소중히 여깁니다.',
+                    '말씀의 논리적 흐름과 의미를 깊이 탐구합니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식합니다.',
+                    '신앙생활을 마음의 흐름에 따라 유연하게 실천합니다.'
+                ],
+                growth: '체계적인 신앙생활을 위해 계획을 세우는 연습도 필요합니다.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'RWPO': {
+                emoji: '💎',
+                nickname: '진리의 보석',
+                description: '당신은 관계를 중시하고 이성적으로 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 계획적인 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '공동체와의 관계를 소중히 여깁니다.',
+                    '이성적이고 논리적인 방식으로 신앙을 이해합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 계획적이고 규칙적으로 실천합니다.'
+                ],
+                growth: '하나님의 사랑과 은혜를 감성적으로 경험하는 것에 마음을 열어보세요.',
+                compatibility: '자유로운 영혼의 탐구자인 RWPF 유형과 잘 맞습니다.'
+            },
+            'RWPF': {
+                emoji: '🌌',
+                nickname: '이성적인 자유의 우주',
+                description: '당신은 관계를 중시하고 이성적으로 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 유연하게 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '공동체와의 관계를 소중히 여깁니다.',
+                    '말씀의 논리적 흐름과 의미를 깊이 탐구합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 마음의 흐름에 따라 유연하게 실천합니다.'
+                ],
+                growth: '감정적인 교류에도 마음을 열어보세요.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'SEDO': {
+                emoji: '💡',
+                nickname: '감성적인 지혜의 등대',
+                description: '당신은 개인적인 묵상과 감정적인 경험을 통해 신앙을 표현하며, 하나님과의 친밀한 관계를 통해 삶을 계획하고 실천하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '감성적이고 경험을 중시합니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식합니다.',
+                    '신앙생활을 계획적이고 규칙적으로 실천합니다.'
+                ],
+                growth: '공동체 안에서 다른 지체들과의 깊은 관계를 통해 사랑을 나누는 경험이 필요합니다.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'SEDF': {
+                emoji: '🌸',
+                nickname: '고요한 감성의 샘',
+                description: '당신은 개인적인 묵상과 감성적인 경험을 통해 신앙을 표현하며, 하나님과의 친밀한 관계 속에서 자유롭게 헌신하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '감성적이고 경험을 중시합니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식합니다.',
+                    '신앙생활을 마음의 감동에 따라 유연하게 실천합니다.'
+                ],
+                growth: '공동체와의 교류를 통해 새로운 영적 경험을 할 수 있습니다.',
+                compatibility: '관계 지향적인 R 유형과 함께할 때 더욱 풍성한 신앙생활을 경험할 수 있습니다.'
+            },
+            'SEPO': {
+                emoji: '🔥',
+                nickname: '내면의 열정가',
+                description: '당신은 개인적인 묵상과 감정적인 경험을 통해 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 계획적인 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '감성적이고 경험을 중시합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 계획적이고 규칙적으로 실천합니다.'
+                ],
+                growth: '공동체 안에서 다른 지체들과의 깊은 관계를 통해 사랑을 나누는 경험이 필요합니다.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'SEPF': {
+                emoji: '🕊️',
+                nickname: '고요한 영혼의 탐험가',
+                description: '당신은 개인적인 묵상과 감성적인 경험을 통해 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 유연하게 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '감성적이고 경험을 중시합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 마음의 흐름에 따라 유연하게 실천합니다.'
+                ],
+                growth: '공동체 안에서 다른 지체들과의 관계를 통해 배우고 성장할 기회를 놓치지 마세요.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'SWDO': {
+                emoji: '📚',
+                nickname: '말씀 중심의 실천가',
+                description: '당신은 개인적인 묵상과 이성적인 이해를 통해 신앙을 표현하며, 하나님과의 친밀한 관계를 통해 삶을 계획하고 실천하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '말씀의 논리적 흐름과 의미를 깊이 탐구합니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식합니다.',
+                    '신앙생활을 계획적이고 규칙적으로 실천합니다.'
+                ],
+                growth: '공동체 안에서 다른 지체들과의 깊은 관계를 통해 사랑을 나누는 경험이 필요합니다.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'SWDF': {
+                emoji: '🌳',
+                nickname: '고요한 믿음의 나무',
+                description: '당신은 개인적인 묵상과 이성적인 이해를 통해 신앙을 표현하며, 하나님과의 친밀한 관계 속에서 자유롭게 헌신하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '말씀의 논리적 흐름과 의미를 깊이 탐구합니다.',
+                    '하나님을 사랑이 많고 친밀한 분으로 인식합니다.',
+                    '신앙생활을 마음의 흐름에 따라 유연하게 실천합니다.'
+                ],
+                growth: '공동체 안에서 다른 지체들과의 관계를 통해 배우고 성장할 기회를 놓치지 마세요.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'SWPO': {
+                emoji: '🌟',
+                nickname: '빛나는 순종의 별',
+                description: '당신은 개인적인 묵상과 이성적인 이해를 통해 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 계획적인 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '말씀의 논리적 흐름과 의미를 깊이 탐구합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 계획적이고 규칙적으로 실천합니다.'
+                ],
+                growth: '공동체 안에서 다른 지체들과의 깊은 관계를 통해 사랑을 나누는 경험이 필요합니다.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            },
+            'SWPF': {
+                emoji: '⛰️',
+                nickname: '흔들림 없는 산',
+                description: '당신은 개인적인 묵상과 이성적인 이해를 통해 신앙을 표현하며, 하나님을 원칙 중심적으로 인식하고 유연하게 신앙생활을 하는 유형입니다.',
+                traits: [
+                    '혼자만의 시간을 통해 하나님과 깊이 교제합니다.',
+                    '말씀의 논리적 흐름과 의미를 깊이 탐구합니다.',
+                    '하나님을 공의롭고 질서의 하나님으로 인식합니다.',
+                    '신앙생활을 마음의 흐름에 따라 유연하게 실천합니다.'
+                ],
+                growth: '공동체 안에서 다른 지체들과의 관계를 통해 배우고 성장할 기회를 놓치지 마세요.',
+                compatibility: '감성적이고 관계 지향적인 R 유형과 좋은 시너지를 낼 수 있습니다.'
+            }
+        };
+
+        // 전역 변수
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let netScores = { RS: 0, EW: 0, DP: 0, OF: 0 };
+
+        // 테스트 시작 함수
+        function startTest() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('testScreen').style.display = 'flex';
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            netScores = { RS: 0, EW: 0, DP: 0, OF: 0 };
+            renderQuestion();
+        }
+
+        // 현재 질문 렌더링 함수
+        function renderQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('questionNumber').textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('questionText').textContent = question.text;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            // 모바일 텍스트 표시
+            const mobileTextDisplay = document.getElementById('mobileTextDisplay');
+            const mobileLeftText = document.getElementById('mobileLeftText');
+            const mobileRightText = document.getElementById('mobileRightText');
+            
+            if (window.innerWidth <= 767) {
+                mobileTextDisplay.style.display = 'block';
+                mobileLeftText.textContent = question.leftText;
+                mobileRightText.textContent = question.rightText;
+            } else {
+                mobileTextDisplay.style.display = 'none';
+            }
+
+            // 4단계 척도 옵션 생성
+            const optionDetails = [
+                { score: 4, type: question.leftType, isLarge: true, color: '#667eea' },
+                { score: 3, type: question.leftType, isLarge: false, color: '#808ff6' },
+                { score: 2, type: question.rightType, isLarge: false, color: '#9b76c7' },
+                { score: 1, type: question.rightType, isLarge: true, color: '#764ba2' }
+            ];
+
+            // 데스크톱용 왼쪽 텍스트
+            const leftTextWrapper = document.createElement('div');
+            leftTextWrapper.classList.add('option-text-wrapper', 'left-text');
+            leftTextWrapper.innerHTML = `<p>${question.leftText}</p>`;
+            optionsContainer.appendChild(leftTextWrapper);
+
+            // 원형 버튼들을 감싸는 래퍼
+            const circleWrapper = document.createElement('div');
+            circleWrapper.classList.add('circle-wrapper');
+
+            // 4개의 원형 버튼 생성
+            optionDetails.forEach((option, index) => {
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `question-${currentQuestionIndex}`;
+                input.id = `q${currentQuestionIndex}-option${index}`;
+                input.value = `${option.score}-${option.type}`;
+
+                const optionContainer = document.createElement('label');
+                optionContainer.htmlFor = input.id;
+                optionContainer.classList.add('option-circle-container');
+
+                const circle = document.createElement('div');
+                circle.classList.add('option-circle');
+                circle.classList.add(option.isLarge ? 'large' : 'small');
+                circle.style.borderColor = option.color;
+
+                optionContainer.appendChild(circle);
+                
+                // 이전 답변 복원
+                const savedAnswer = userAnswers.find(ans => ans.questionIndex === currentQuestionIndex);
+                if (savedAnswer && savedAnswer.selectedScore === option.score && savedAnswer.selectedType === option.type) {
+                    input.checked = true;
+                    circle.style.backgroundColor = option.color;
+                }
+
+                // 선택 이벤트
+                input.addEventListener('change', () => {
+                    // 모든 원형 초기화
+                    optionsContainer.querySelectorAll('.option-circle').forEach(c => {
+                        c.style.backgroundColor = 'var(--gray-light)';
+                    });
+                    
+                    // 선택된 원형 색상 변경
+                    circle.style.backgroundColor = option.color;
+                    
+                    // 텍스트 강조 (데스크톱)
+                    leftTextWrapper.classList.remove('selected-left');
+                    rightTextWrapper.classList.remove('selected-right');
+                    if (option.type === question.leftType) {
+                        leftTextWrapper.classList.add('selected-left');
+                    } else {
+                        rightTextWrapper.classList.add('selected-right');
+                    }
+                    
+                    document.getElementById('nextBtn').disabled = false;
+
+                    // 답변 저장
+                    const existingAnswerIndex = userAnswers.findIndex(ans => ans.questionIndex === currentQuestionIndex);
+                    const [score, type] = input.value.split('-');
+                    const newAnswer = {
+                        questionIndex: currentQuestionIndex,
+                        selectedScore: parseInt(score),
+                        selectedType: type
+                    };
+
+                    if (existingAnswerIndex > -1) {
+                        userAnswers[existingAnswerIndex] = newAnswer;
+                    } else {
+                        userAnswers.push(newAnswer);
+                    }
+                });
+
+                circleWrapper.appendChild(input);
+                circleWrapper.appendChild(optionContainer);
+            });
+
+            optionsContainer.appendChild(circleWrapper);
+
+            // 데스크톱용 오른쪽 텍스트
+            const rightTextWrapper = document.createElement('div');
+            rightTextWrapper.classList.add('option-text-wrapper', 'right-text');
+            rightTextWrapper.innerHTML = `<p>${question.rightText}</p>`;
+            optionsContainer.appendChild(rightTextWrapper);
+
+            updateNavigationButtons();
+            updateProgressBar();
+        }
+
+        // 네비게이션 버튼 업데이트
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            const currentQuestionAnswered = userAnswers.some(ans => ans.questionIndex === currentQuestionIndex);
+            document.getElementById('nextBtn').disabled = !currentQuestionAnswered;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').textContent = '결과 보기';
+            } else {
+                document.getElementById('nextBtn').textContent = '다음';
+            }
+        }
+
+        // 진행률 바 업데이트
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // 다음 질문
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                calculateResult();
+            }
+        }
+
+        // 이전 질문
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        // 결과 계산
+        function calculateResult() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('testScreen').style.display = 'none';
+
+            netScores = { RS: 0, EW: 0, DP: 0, OF: 0 };
+
+            userAnswers.forEach(answer => {
+                const question = questions[answer.questionIndex];
+                let pairKey;
+                if (question.leftType === 'R' || question.rightType === 'S') pairKey = 'RS';
+                else if (question.leftType === 'E' || question.rightType === 'W') pairKey = 'EW';
+                else if (question.leftType === 'D' || question.rightType === 'P') pairKey = 'DP';
+                else if (question.leftType === 'O' || question.rightType === 'F') pairKey = 'OF';
+
+                if (answer.selectedType === question.leftType) {
+                    if (answer.selectedScore === 4) netScores[pairKey] += 2;
+                    else if (answer.selectedScore === 3) netScores[pairKey] += 1;
+                } else {
+                    if (answer.selectedScore === 2) netScores[pairKey] -= 1;
+                    else if (answer.selectedScore === 1) netScores[pairKey] -= 2;
+                }
+            });
+
+            const finalType = {
+                R_S: netScores.RS >= 0 ? 'R' : 'S',
+                E_W: netScores.EW >= 0 ? 'E' : 'W',
+                D_P: netScores.DP >= 0 ? 'D' : 'P',
+                O_F: netScores.OF >= 0 ? 'O' : 'F'
+            };
+
+            const typeCode = finalType.R_S + finalType.E_W + finalType.D_P + finalType.O_F;
+            const result = resultTypes[typeCode] || {
+                emoji: '❓',
+                nickname: '알 수 없는 유형',
+                description: '이 유형에 대한 정보는 아직 준비되지 않았습니다.',
+                traits: [],
+                growth: '더 많은 데이터를 통해 유형을 분석하고 있습니다.',
+                compatibility: '모든 유형과 잘 맞을 수 있습니다!'
+            };
+
+            // 결과 화면 업데이트
+            document.getElementById('typeEmoji').textContent = result.emoji;
+            document.getElementById('typeCode').textContent = typeCode;
+            document.getElementById('typeNickname').textContent = result.nickname;
+            document.getElementById('typeDescription').textContent = result.description;
+
+            const traitsListElem = document.getElementById('traitsList');
+            traitsListElem.innerHTML = '';
+            result.traits.forEach(trait => {
+                const li = document.createElement('li');
+                li.textContent = trait;
+                traitsListElem.appendChild(li);
+            });
+
+            document.getElementById('growthPoint').textContent = result.growth;
+            document.getElementById('compatibility').textContent = result.compatibility;
+
+            // 상세 분석 시각화
+            const scoreDetailsElem = document.getElementById('scoreDetails');
+            scoreDetailsElem.innerHTML = '';
+            const pairs = [
+                { key: 'RS', left: 'R', right: 'S', leftLabel: '교제형(R)', rightLabel: '묵상형(S)', description: '공동체 참여 성향' },
+                { key: 'EW', left: 'E', right: 'W', leftLabel: '체험형(E)', rightLabel: '말씀형(W)', description: '신앙 표현 방식' },
+                { key: 'DP', left: 'D', right: 'P', leftLabel: '관계중심형(D)', rightLabel: '원칙중심형(P)', description: '하나님 인식 방식' },
+                { key: 'OF', left: 'O', right: 'F', leftLabel: '정돈형(O)', rightLabel: '유연형(F)', description: '신앙생활 패턴' }
+            ];
+
+            pairs.forEach(pair => {
+                const netScore = netScores[pair.key];
+                let leftBarWidth = 0;
+                let rightBarWidth = 0;
+
+                if (netScore > 0) {
+                    leftBarWidth = (netScore / 10) * 50;
+                } else if (netScore < 0) {
+                    rightBarWidth = (Math.abs(netScore) / 10) * 50;
+                }
+
+                const scoreRow = document.createElement('div');
+                scoreRow.classList.add('score-row');
+                scoreRow.innerHTML = `
+                    <div class="score-labels">
+                        <span class="score-label ${netScore > 0 ? 'active' : ''}">${pair.leftLabel}</span>
+                        <span class="score-label ${netScore < 0 ? 'active' : ''}">${pair.rightLabel}</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-light); margin-top: 5px; text-align: center;">${pair.description}</p>
+                    <div class="score-bar-container">
+                        <div class="score-bar-center"></div>
+                        <div class="score-fill-left" style="width: ${leftBarWidth}%;"></div>
+                        <div class="score-fill-right" style="width: ${rightBarWidth}%;"></div>
+                    </div>
+                `;
+                scoreDetailsElem.appendChild(scoreRow);
+            });
+
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+            }, 500);
+        }
+
+        // 결과 공유
+        async function shareResult() {
+            const resultUrl = window.location.href;
+            try {
+                await navigator.clipboard.writeText(resultUrl);
+                showMessage('결과 링크가 복사되었습니다!', 'success');
+            } catch (err) {
+                showMessage('링크 복사에 실패했습니다.', 'error');
+            }
+        }
+
+        // 결과 이미지 다운로드 (모바일 사이즈로 개선)
+        async function downloadResultImage() {
+            document.getElementById('loading').style.display = 'block';
+            
+            // 결과 카드 준비
+            const resultCard = document.getElementById('resultCardForImage');
+            const typeCode = document.getElementById('typeCode').textContent;
+            const result = resultTypes[typeCode];
+            
+            // 카드 내용 채우기
+            document.getElementById('cardEmoji').textContent = result.emoji;
+            document.getElementById('cardTypeCode').textContent = typeCode;
+            document.getElementById('cardNickname').textContent = result.nickname;
+            document.getElementById('cardDescription').textContent = result.description;
+            
+            // 주요 특징 리스트 추가
+            const cardTraitsList = document.getElementById('cardTraitsList');
+            cardTraitsList.innerHTML = '';
+            result.traits.forEach(trait => {
+                const li = document.createElement('li');
+                li.textContent = trait;
+                cardTraitsList.appendChild(li);
+            });
+            
+            // 카드 표시
+            resultCard.style.display = 'block';
+            
+            // 잠시 대기 (렌더링 완료를 위해)
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            try {
+                const canvas = await html2canvas(resultCard, {
+                    scale: 2, // 고화질
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    width: 390, // iPhone 기준 너비
+                    height: 844, // iPhone 기준 높이
+                    windowWidth: 390,
+                    windowHeight: 844
+                });
+
+                // 이미지 다운로드
+                const imageDataUrl = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = imageDataUrl;
+                a.download = `FATI_${typeCode}_${result.nickname}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                showMessage('📱 결과 이미지가 저장되었습니다!', 'success');
+            } catch (error) {
+                console.error('이미지 다운로드 실패:', error);
+                showMessage('이미지 다운로드에 실패했습니다.', 'error');
+            } finally {
+                resultCard.style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // 메시지 표시 함수
+        function showMessage(text, type) {
+            const messageBox = document.createElement('div');
+            messageBox.textContent = text;
+            messageBox.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: ${type === 'success' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 0, 0, 0.7)'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 10px;
+                font-size: 14px;
+                z-index: 9999;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            `;
+            document.body.appendChild(messageBox);
+            setTimeout(() => messageBox.style.opacity = 1, 10);
+            setTimeout(() => {
+                messageBox.style.opacity = 0;
+                messageBox.addEventListener('transitionend', () => messageBox.remove());
+            }, 2000);
+        }
+
+        // 다시 검사하기
+        function restartTest() {
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'flex';
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            netScores = { RS: 0, EW: 0, DP: 0, OF: 0 };
+            document.getElementById('progressBar').style.width = '0%';
+        }
+
+        // 윈도우 리사이즈 이벤트
+        window.addEventListener('resize', () => {
+            if (document.getElementById('testScreen').style.display === 'flex') {
+                renderQuestion();
+            }
+        });
+
+        // 페이지 로드 시
+        window.onload = () => {
+            document.getElementById('startScreen').style.display = 'flex';
+            document.getElementById('testScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultCardForImage').style.display = 'none';
+        };
+    </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +789,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>FATI 신앙유형검사 - Faith Attitude Type Indicator</title>
+    <!-- html2canvas 라이브러리 추가 -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         /* 모든 요소에 대한 기본 스타일 초기화 */
@@ -16,6 +800,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         
+        /* CSS 변수 정의 */
         :root {
             --primary: #5B72EE;
             --primary-dark: #4A5FDB;
@@ -25,11 +810,8 @@
             --text-light: #495057;
             --gray-light: #f8f9fa;
             --gray-medium: #e9ecef;
-            --circle-size: 50px; /* 모든 원의 크기 동일 */
-
-            /* 새로 추가된 색상 변수 */
-            --color-blue: #667eea;
-            --color-purple: #764ba2;
+            --circle-large-size: 60px;
+            --circle-small-size: 40px;
         }
         
         body {
@@ -48,10 +830,7 @@
             flex-direction: column;
         }
         
-        .start-screen, .test-screen, .result-screen {
-            display: none;
-        }
-
+        /* 시작 화면 스타일 */
         .start-screen {
             display: flex;
             flex-direction: column;
@@ -69,28 +848,90 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .catchphrase { font-size: 16px; opacity: 0.95; margin-bottom: 20px; font-style: italic; letter-spacing: 0.5px; }
-        .logo { font-size: 80px; margin-bottom: 30px; animation: pulse 2s ease-in-out infinite; }
+        .catchphrase {
+            font-size: 16px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
         
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
         
-        .start-screen h1 { font-size: 36px; font-weight: 700; margin-bottom: 10px; }
-        .start-screen .english-title { font-size: 18px; opacity: 0.9; margin-bottom: 25px; font-style: italic; }
+        .start-screen h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
         
-        .fati-explanation { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 20px; padding: 25px; margin-bottom: 30px; text-align: left; max-width: 400px; }
-        .fati-explanation h3 { font-size: 20px; margin-bottom: 15px; text-align: center; }
-        .fati-explanation .fati-item { margin: 10px 0; font-size: 14px; line-height: 1.5; }
-        .fati-explanation .fati-item strong { color: #FFE66D; font-weight: 600; }
+        .start-screen .english-title {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
         
-        .start-btn { background: white; color: var(--primary); border: none; padding: 18px 60px; border-radius: 30px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .start-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
-        .start-btn:active { transform: scale(0.95); }
+        .fati-explanation {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+            max-width: 400px;
+        }
+        
+        .fati-explanation h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .fati-explanation .fati-item {
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .fati-explanation .fati-item strong {
+            color: #FFE66D;
+            font-weight: 600;
+        }
+        
+        .start-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 18px 60px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .start-btn:active {
+            transform: scale(0.95);
+        }
         
         /* 검사 화면 스타일 */
         .test-screen {
+            display: none;
             background: white;
             min-height: 100vh;
             animation: slideIn 0.3s ease;
@@ -101,9 +942,36 @@
             to { transform: translateX(0); }
         }
         
-        .header { background: var(--background); padding: 20px; padding-top: calc(20px + env(safe-area-inset-top)); color: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        .progress-container { background: rgba(255,255,255,0.2); height: 6px; border-radius: 3px; overflow: hidden; margin-top: 10px; max-width: 400px; margin-left: auto; margin-right: auto; }
-        .progress-bar { height: 100%; background: white; border-radius: 3px; transition: width 0.5s ease; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .header {
+            background: var(--background);
+            padding: 20px;
+            padding-top: calc(20px + env(safe-area-inset-top));
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
         
         .question-container {
             padding: 30px 20px;
@@ -116,14 +984,29 @@
             text-align: center;
         }
         
-        .question-number { color: var(--primary); font-weight: 600; font-size: 14px; margin-bottom: 15px; }
-        .question-text { font-size: 22px; font-weight: 600; line-height: 1.5; margin-bottom: 30px; color: var(--text-dark); text-align: center; max-width: 90%; }
+        .question-number {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
         
+        .question-text {
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        /* 질문 선택지 레이아웃 - 데스크톱 */
         .options-scale {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: nowrap;
             padding: 0 10px;
             max-width: 600px;
@@ -141,9 +1024,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: var(--circle-size);
+            min-height: var(--circle-large-size);
+            padding: 10px;
+            background: var(--gray-light);
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        /* 선택된 텍스트 강조 */
+        .options-scale .option-text-wrapper.selected-left,
+        .options-scale .option-text-wrapper.selected-right {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-color: var(--primary);
+            font-weight: 500;
         }
 
+        /* 원형 버튼들을 감싸는 래퍼 */
         .options-scale .circle-wrapper {
             display: flex;
             align-items: center;
@@ -173,95 +1070,544 @@
             justify-content: center;
             flex-shrink: 0;
             transition: all 0.2s;
-            width: var(--circle-size);
-            height: var(--circle-size);
         }
 
-        /* 선택된 옵션 스타일 (색상 변경) */
+        .options-scale .option-circle.large {
+            width: var(--circle-large-size);
+            height: var(--circle-large-size);
+        }
+
+        .options-scale .option-circle.small {
+            width: var(--circle-small-size);
+            height: var(--circle-small-size);
+        }
+
         .options-scale input[type="radio"]:checked + .option-circle-container .option-circle {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            transform: scale(1.1);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            border-color: transparent;
         }
 
-        /* 왼쪽 두 개 선택 시 색상 */
-        .options-scale input[type="radio"].left-option:checked + .option-circle-container .option-circle {
-            background: var(--color-blue);
+        .options-scale input[type="radio"] {
+            display: none;
         }
-        /* 오른쪽 두 개 선택 시 색상 */
-        .options-scale input[type="radio"].right-option:checked + .option-circle-container .option-circle {
-            background: var(--color-purple);
+
+        .options-scale .option-circle-container:hover .option-circle {
+            background: var(--gray-medium);
         }
         
-        .options-scale input[type="radio"] { display: none; }
+        /* 모바일 전용 텍스트 표시 */
+        .mobile-text-display {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--gray-light);
+            border-radius: 12px;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
         
-        .navigation { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); box-shadow: 0 -2px 15px rgba(0,0,0,0.1); display: flex; gap: 12px; z-index: 100; }
-        .nav-btn { flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .nav-btn.prev { background: var(--gray-medium); color: var(--text-light); }
-        .nav-btn.next { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .nav-btn:active:not(:disabled) { transform: scale(0.95); }
+        .mobile-text-display .left-indicator,
+        .mobile-text-display .right-indicator {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
         
-        /* 결과 화면 스타일 */
-        .result-screen { display: none; background: white; min-height: 100vh; animation: fadeIn 0.5s ease; }
-        .result-header { background: var(--background); padding: 50px 20px 60px; padding-top: calc(50px + env(safe-area-inset-top)); text-align: center; color: white; position: relative; overflow: hidden; }
-        .result-header::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 60px; background: white; border-radius: 30px 30px 0 0; }
+        .mobile-text-display .left-indicator {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+        }
         
-        .type-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; }
-        .type-code { font-size: 48px; font-weight: 800; margin: 15px 0; letter-spacing: 3px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
-        .type-emoji { font-size: 64px; margin: 20px 0; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2)); }
-        .type-nickname { font-size: 28px; font-weight: 600; margin-bottom: 30px; position: relative; z-index: 1; }
+        .mobile-text-display .right-indicator {
+            background: linear-gradient(90deg, #764ba2, #667eea);
+            color: white;
+        }
         
-        .result-content { padding: 40px 20px; position: relative; z-index: 10; }
-        .card { background: var(--gray-light); border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .card h3 { color: var(--text-dark); font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .card p { color: var(--text-light); line-height: 1.7; font-size: 15px; }
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
         
-        .traits { list-style: none; margin-top: 15px; }
-        .traits li { padding: 12px 0; color: var(--text-light); font-size: 15px; display: flex; align-items: flex-start; gap: 10px; border-bottom: 1px solid var(--gray-medium); }
-        .traits li:last-child { border-bottom: none; }
-        .traits li::before { content: '✨'; flex-shrink: 0; }
+        .nav-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
         
-        .score-visualization { background: white; border: 2px solid var(--gray-medium); border-radius: 20px; padding: 25px; margin: 20px 0; }
-        .score-row { margin: 25px 0; }
-        .score-labels { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-        .score-label { color: var(--text-light); font-weight: 600; }
-        .score-label.active { color: var(--primary); font-weight: 700; }
-        .score-bar-container { position: relative; height: 12px; background: var(--gray-medium); border-radius: 6px; overflow: hidden; }
-        .score-bar-center { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: var(--text-dark); opacity: 0.7; z-index: 1; }
-        .score-fill-left { position: absolute; right: 50%; top: 0; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 6px 0 0 6px; transition: width 1s ease; }
-        .score-fill-right { position: absolute; left: 50%; top: 0; height: 100%; background: linear-gradient(90deg, #764ba2, #667eea); border-radius: 0 6px 6px 0; transition: width 1s ease; }
+        .nav-btn.prev {
+            background: var(--gray-medium);
+            color: var(--text-light);
+        }
         
-        .actions { padding: 20px; padding-bottom: calc(30px + env(safe-area-inset-bottom)); }
-        .action-btn { width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
-        .action-btn.primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .action-btn.secondary { background: var(--gray-light); color: var(--text-light); }
-        .action-btn:active { transform: scale(0.95); }
+        .nav-btn.next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
         
-        .copyright { text-align: center; padding: 20px; color: var(--text-light); font-size: 12px; background: var(--gray-light); line-height: 1.6; }
-        .copyright strong { color: var(--text-dark); }
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
         
-        /* 로딩 애니메이션 */
-        .loading { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 1000; background: rgba(255, 255, 255, 0.8); padding: 30px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .loading-spinner { width: 50px; height: 50px; border: 3px solid var(--gray-medium); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .nav-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
         
-        /* 반응형 디자인: 태블릿 및 데스크톱 */
+        /* 결과 화면 스타일 - 이미지 저장을 위한 수정 */
+        .result-screen {
+            display: none;
+            background: white;
+            min-height: 100vh;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* 결과 카드 - 이미지 저장용 (모바일 크기) */
+        .result-card-for-image {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 390px; /* iPhone 기준 너비 */
+            min-height: 844px; /* iPhone 기준 높이 */
+            background: white;
+            z-index: 10000;
+            overflow: hidden;
+        }
+        
+        .result-card-header {
+            background: var(--background);
+            padding: 50px 20px 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .result-card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .result-card-header .emoji {
+            font-size: 72px;
+            margin-bottom: 20px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .result-card-header .type-code {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .result-card-header .nickname {
+            font-size: 24px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+        
+        .result-card-body {
+            padding: 40px 20px 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .result-card-body .description {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-size: 15px;
+            text-align: center;
+            padding: 20px;
+            background: var(--gray-light);
+            border-radius: 16px;
+        }
+        
+        .result-card-body .traits-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .result-card-body .traits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .result-card-body .traits-list li {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: white;
+            border: 2px solid var(--gray-medium);
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+        
+        .result-card-body .traits-list li::before {
+            content: '✨';
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+        
+        .result-card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 20px;
+            background: var(--gray-light);
+            color: var(--text-light);
+            font-size: 12px;
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .result-card-footer .footer-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .result-header {
+            background: var(--background);
+            padding: 50px 20px 60px;
+            padding-top: calc(50px + env(safe-area-inset-top));
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .type-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .type-code {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 15px 0;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .type-emoji {
+            font-size: 64px;
+            margin: 20px 0;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .type-nickname {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .result-content {
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .card {
+            background: var(--gray-light);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card h3 {
+            color: var(--text-dark);
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card p {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        
+        .traits {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .traits li {
+            padding: 12px 0;
+            color: var(--text-light);
+            font-size: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .traits li:last-child {
+            border-bottom: none;
+        }
+        
+        .traits li::before {
+            content: '✨';
+            flex-shrink: 0;
+        }
+        
+        .score-visualization {
+            background: white;
+            border: 2px solid var(--gray-medium);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .score-row {
+            margin: 25px 0;
+        }
+        
+        .score-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .score-label {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        .score-label.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .score-bar-container {
+            position: relative;
+            height: 12px;
+            background: var(--gray-medium);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .score-bar-center {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--text-dark);
+            opacity: 0.7;
+            z-index: 1;
+        }
+        
+        .score-fill-left {
+            position: absolute;
+            right: 50%;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 6px 0 0 6px;
+            transition: width 1s ease;
+        }
+        
+        .score-fill-right {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #764ba2, #667eea);
+            border-radius: 0 6px 6px 0;
+            transition: width 1s ease;
+        }
+        
+        .actions {
+            padding: 20px;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom));
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: var(--gray-light);
+            color: var(--text-light);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 12px;
+            background: var(--gray-light);
+            line-height: 1.6;
+        }
+        
+        .copyright strong {
+            color: var(--text-dark);
+        }
+        
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--gray-medium);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 태블릿 및 데스크톱 */
         @media (min-width: 768px) {
-            .container { max-width: 600px; margin: 0 auto; box-shadow: 0 0 50px rgba(0,0,0,0.1); }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            }
         }
 
         /* 모바일 반응형 디자인 (767px 이하) */
         @media (max-width: 767px) {
-            .options-scale { flex-direction: column; align-items: center; gap: 15px; padding: 0 5px; }
-            .options-scale .option-text-wrapper { width: 100%; flex-basis: auto; min-height: auto; text-align: center; padding: 0 10px; }
-            .options-scale .circle-wrapper { width: 100%; justify-content: center; gap: 8px; }
-            .options-scale .option-circle.large { width: var(--circle-size); height: var(--circle-size); }
-            .options-scale .option-circle.small { width: var(--circle-size); height: var(--circle-size); }
+            .options-scale {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                padding: 0 5px;
+            }
+            
+            /* 모바일에서 텍스트 래퍼 숨기기 */
+            .options-scale .option-text-wrapper {
+                display: none;
+            }
+            
+            /* 모바일 전용 텍스트 표시 영역 보이기 */
+            .mobile-text-display {
+                display: block;
+            }
+
+            .options-scale .circle-wrapper {
+                width: 100%;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .options-scale .option-circle.large {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .options-scale .option-circle.small {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .question-text {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- 시작 화면 -->
         <div class="start-screen" id="startScreen">
             <div class="catchphrase">나만의 독특한 신앙 스타일을 발견해보세요</div>
             <div class="logo">🙏</div>
@@ -270,10 +1616,18 @@
             
             <div class="fati-explanation">
                 <h3>FATI란?</h3>
-                <div class="fati-item"><strong>F</strong>ellowship - 공동체 참여 성향 (R/S)</div>
-                <div class="fati-item"><strong>A</strong>ffection - 신앙 표현 방식 (E/W)</div>
-                <div class="fati-item"><strong>T</strong>heology - 하나님 인식 방식 (D/P)</div>
-                <div class="fati-item"><strong>I</strong>ntention - 신앙생활 패턴 (O/F)</div>
+                <div class="fati-item">
+                    <strong>F</strong>ellowship - 공동체 참여 성향 (R/S)
+                </div>
+                <div class="fati-item">
+                    <strong>A</strong>ffection - 신앙 표현 방식 (E/W)
+                </div>
+                <div class="fati-item">
+                    <strong>T</strong>heology - 하나님 인식 방식 (D/P)
+                </div>
+                <div class="fati-item">
+                    <strong>I</strong>ntention - 신앙생활 패턴 (O/F)
+                </div>
             </div>
             
             <button class="start-btn" onclick="startTest()">시작하기</button>
@@ -282,6 +1636,7 @@
             </div>
         </div>
         
+        <!-- 검사 화면 -->
         <div class="test-screen" id="testScreen">
             <div class="header">
                 <div class="progress-container">
@@ -292,8 +1647,18 @@
             <div class="question-container">
                 <div class="question-number" id="questionNumber"></div>
                 <div class="question-text" id="questionText"></div>
-                <div class="options-scale" id="optionsContainer">
+                <div class="options-scale" id="optionsContainer"></div>
+                <!-- 모바일 전용 텍스트 표시 영역 -->
+                <div class="mobile-text-display" id="mobileTextDisplay" style="display: none;">
+                    <div>
+                        <span class="left-indicator">◀ 왼쪽</span>
+                        <p id="mobileLeftText" style="margin: 5px 0; font-size: 14px;"></p>
                     </div>
+                    <div style="margin-top: 15px;">
+                        <span class="right-indicator">오른쪽 ▶</span>
+                        <p id="mobileRightText" style="margin: 5px 0; font-size: 14px;"></p>
+                    </div>
+                </div>
             </div>
             
             <div class="navigation">
@@ -302,6 +1667,7 @@
             </div>
         </div>
         
+        <!-- 결과 화면 -->
         <div class="result-screen" id="resultScreen">
             <div class="result-header">
                 <div class="type-badge">당신의 신앙유형</div>
@@ -351,303 +1717,30 @@
             </div>
         </div>
         
+        <!-- 이미지 저장용 결과 카드 (모바일 사이즈) -->
+        <div class="result-card-for-image" id="resultCardForImage">
+            <div class="result-card-header">
+                <div class="emoji" id="cardEmoji"></div>
+                <div class="type-code" id="cardTypeCode"></div>
+                <div class="nickname" id="cardNickname"></div>
+            </div>
+            <div class="result-card-body">
+                <p class="description" id="cardDescription"></p>
+                <div class="traits-title">
+                    <span>✨</span>
+                    <span>주요 특징</span>
+                    <span>✨</span>
+                </div>
+                <ul class="traits-list" id="cardTraitsList"></ul>
+            </div>
+            <div class="result-card-footer">
+                <div class="footer-title">FATI 신앙유형검사</div>
+                <div>Faith Attitude Type Indicator</div>
+                <div style="margin-top: 5px; font-size: 11px;">© 2025 문은성, 송은서, 임현아</div>
+            </div>
+        </div>
+        
+        <!-- 로딩 -->
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
-        </div>
-    </div>
-    
-    <script>
-        // 문항 데이터
-        const questions = [
-            // 공동체 참여 성향 (R/S) - R: 관계 지향, S: 독립 지향
-            { category: '공동체 참여 성향', text: '🎵 성가대 연습에 10분 늦은 당신! 모두가 먼저 와 있고, 당신만 눈치 보며 들어간 상황에서…', leftText: '가볍게 사과하고 주변에 자연스럽게 섞이는 편이다.', rightText: '누구도 말 안 걸었으면 하고 그냥 묵묵히 앉아있는 편이다.', leftType: 'R', rightType: 'S' },
-            { category: '공동체 참여 성향', text: '🙋 청년부에 새로 온 지체가 혼자 앉아있다.', leftText: '반가운 마음으로 먼저 다가가 말을 건넨다.', rightText: '어색해서 다가가긴 어렵지만 조용히 관심을 갖고 기회가 되면 개인적으로 대화한다.', leftType: 'R', rightType: 'S' },
-            { category: '공동체 참여 성향', text: '📆 수련회에 참석하게 된 당신, 가장 기대하는 것은?', leftText: '많은 사람들과 함께 뜨거운 예배를 드리는 것', rightText: '혼자만의 시간에 뜨겁게 기도하는 것', leftType: 'R', rightType: 'S' },
-            { category: '공동체 참여 성향', text: '🧠 신앙적인 고민이 깊어진 시기, 당신은?', leftText: '신앙 친구들과 나누며 함께 기도한다.', rightText: '혼자 하나님께 기도하며 답을 구한다.', leftType: 'R', rightType: 'S' },
-            { category: '공동체 참여 성향', text: '❓ 교회 재정이나 헌금에 대해 내 마음은?', leftText: '공동체가 함께 사용하는 것이라 기꺼이 나누고 싶은 마음이다.', rightText: '조용히 하나님 앞에서 결정하고 헌금은 개인적인 헌신이라고 생각한다.', leftType: 'R', rightType: 'S' },
-            // 신앙 표현방식 (E/W) - E: 감정/경험 지향, W: 이성/원리 지향
-            { category: '신앙 표현방식', text: '🎤 썸워십에 참석한 당신, 어떤 스타일인가요?', leftText: '몸으로 표현하며 감정이 우러나는 찬양을 좋아한다', rightText: '가사의 의미를 생각하며 조용히 마음으로 부른다', leftType: 'E', rightType: 'W' },
-            { category: '신앙 표현방식', text: '📖 말씀 듣는 중, 당신의 자세는?', leftText: '말씀을 통해 받은 감동과 느낌을 중심으로 정리한다.', rightText: '논리적 흐름과 단어의 뜻을 구조적으로 정리한다.', leftType: 'E', rightType: 'W' },
-            { category: '신앙 표현방식', text: '🙏 기도응답을 경험했을 때', leftText: '하나님이 살아계심을 느꼈다는 체험에 집중한다.', rightText: '하나님의 뜻이 무엇인지 깨달은 것에 집중한다.', leftType: 'E', rightType: 'W' },
-            { category: '신앙 표현방식', text: '💬 수련회 이후, 목장 사람들과 함께 간증 나눔을 하게 된 당신', leftText: '하나님을 경험한 순간의 감정과 느낌을 자세히 나눈다', rightText: '하나님이 어떤 방법으로 역사하셨는지 사실 중심으로 나눈다', leftType: 'E', rightType: 'W' },
-            { category: '신앙 표현방식', text: '💰 재정이나 시간의 우선순위를 정할 때 기준은?', leftText: '마음속에서 하나님이 주신 감동이나 흐름을 따른다.', rightText: '말씀을 통해 배우고 적용한 원칙을 중심으로 판단한다.', leftType: 'E', rightType: 'W' },
-            // 하나님 인식방식 (D/P) - D: 관계/친밀함 지향, P: 권위/주권 지향
-            { category: '하나님 인식방식', text: '📖 성경을 읽을 때 가장 먼저 드는 감정은?', leftText: '하나님이 내게 말 걸어 주시는 듯한 친밀감을 느끼는 편이다', rightText: '하나님의 명령과 기준이 무엇인지 찾는 편이다', leftType: 'D', rightType: 'P' },
-            { category: '하나님 인식방식', text: '🙏 기도할 때, 당신은 하나님을 어떻게 그리는가?', leftText: '내가 힘들 때 안아 주시는 따뜻한 분', rightText: '내 삶을 판단하고 이끄시는 기준이자 주권자', leftType: 'D', rightType: 'P' },
-            { category: '하나님 인식방식', text: '🧭 믿음의 결정을 내려야 할 때, 당신은?', leftText: '마음에 평안이 있는지를 중심으로 분별한다.', rightText: '말씀의 기준에 맞는지를 따져본다.', leftType: 'D', rightType: 'P' },
-            { category: '하나님 인식방식', text: '✝️ 신앙생활의 주된 동기는', leftText: '하나님과의 더 깊은 사랑의 관계를 위해', rightText: '하나님이 기뻐하시는 올바른 삶을 살기 위해', leftType: 'D', rightType: 'P' },
-            { category: '하나님 인식방식', text: '🙌 하나님께 헌신을 결단할 때, 어떤 마음이 앞서는가?', leftText: '하나님께 사랑받고 있다는 감격이 헌신의 원동력이다.', rightText: '하나님의 뜻에 순종하는 것이 당연하다는 책임감이 앞선다.', leftType: 'D', rightType: 'P' },
-            // 신앙생활 패턴 (O/F) - O: 조직/계획 지향, F: 유연/자유 지향
-            { category: '신앙생활 패턴', text: '📆 수련회 전날 밤, 당신은?', leftText: '짐, 일정, 말씀 다 정리하고 기도까지 마친 상태다.', rightText: '마음 가는 대로 내일 아침에 짐 싸도 괜찮다.', leftType: 'O', rightType: 'F' },
-            { category: '신앙생활 패턴', text: '📖 성경 읽기를 시작하려는 당신.', leftText: '계획표를 세워 하루 분량을 지키려고 노력하는 편이다.', rightText: '마음에 끌리는 본문 위주로 자유롭게 읽는 편이다.', leftType: 'O', rightType: 'F' },
-            { category: '신앙생활 패턴', text: '📝 기도제목을 기록하는 방식은?', leftText: '날짜별로 정리된 노트나 앱을 사용하는 편이다.', rightText: '떠오를 때 간단히 메모하는 편이다.', leftType: 'O', rightType: 'F' },
-            { category: '신앙생활 패턴', text: '신앙생활을 실천하는 나만의 방식은?', leftText: '신앙생활은 계획적으로 실천하는 것이 중요하다고 생각한다.', rightText: '신앙생활은 흐름에 따라 자연스럽게 이어지는 것이 더 의미 있다고 생각한다.', leftType: 'O', rightType: 'F' },
-            { category: '신앙생활 패턴', text: '🎁 헌금이나 봉사를 할 때의 나는?', leftText: '미리 계획하고 정해둔 방식대로 정기적으로 실천한다.', rightText: '마음이 감동되었을 때 자발적으로 드리고 참여하는 편이다.', leftType: 'O', rightType: 'F' }
-        ];
-
-        // 각 유형별 결과 설명
-        const resultTypes = {
-            'REDO': { emoji: '💖', nickname: '사랑 넘치는 공동체 리더', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'REDF': { emoji: '🌊', nickname: '자유로운 사랑의 파도', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'REPO': { emoji: '🌈', nickname: '감격의 무지개', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'REPF': { emoji: '🎆', nickname: '정의로운 카타르시스', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SEDO': { emoji: '💎', nickname: '깊이있는 영적 탐구자', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SEDF': { emoji: '🏞️', nickname: '경건한 영혼의 순례자', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SEPO': { emoji: '⚖️', nickname: '말씀의 설계자', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SEPF': { emoji: '🌌', nickname: '지혜로운 우주 여행자', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'RWDO': { emoji: '🤝', nickname: '진정한 동역자', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'RWDF': { emoji: '🌱', nickname: '따뜻한 영혼의 정원사', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'RWPO': { emoji: '🏰', nickname: '하나님 나라의 건축가', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'RWPF': { emoji: '🔑', nickname: '사랑의 열쇠지기', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SWDO': { emoji: '📚', nickname: '조직적인 성경학자', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SWDF': { emoji: '🕊️', nickname: '고요한 묵상가', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SWPO': { emoji: '🛡️', nickname: '진리의 수호자', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' },
-            'SWPF': { emoji: '💡', nickname: '깨달음의 등불', description: '...', traits: ['...', '...'], growth: '...', compatibility: '...' }
-        };
-
-        let currentQuestionIndex = 0;
-        let answers = {};
-        let score = { 'R': 0, 'S': 0, 'E': 0, 'W': 0, 'D': 0, 'P': 0, 'O': 0, 'F': 0 };
-
-        // 화면 전환 함수
-        function showScreen(screenId) {
-            document.querySelectorAll('.container > div').forEach(div => div.style.display = 'none');
-            document.getElementById(screenId).style.display = 'flex';
-        }
-
-        // 테스트 시작
-        function startTest() {
-            currentQuestionIndex = 0;
-            answers = {};
-            score = { 'R': 0, 'S': 0, 'E': 0, 'W': 0, 'D': 0, 'P': 0, 'O': 0, 'F': 0 };
-            showScreen('testScreen');
-            renderQuestion();
-        }
-
-        // 질문 렌더링
-        function renderQuestion() {
-            const question = questions[currentQuestionIndex];
-            const qNumEl = document.getElementById('questionNumber');
-            const qTextEl = document.getElementById('questionText');
-            const optionsContainer = document.getElementById('optionsContainer');
-            const progressBar = document.getElementById('progressBar');
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-
-            qNumEl.textContent = `Q${currentQuestionIndex + 1}/${questions.length}`;
-            qTextEl.textContent = question.text;
-
-            // 선택지 동적 생성
-            optionsContainer.innerHTML = `
-                <div class="option-text-wrapper left-text">
-                    <span class="option-number">1.</span>
-                    <span class="option-text">${question.leftText}</span>
-                </div>
-                <div class="circle-wrapper">
-                    <label class="option-circle-container">
-                        <input type="radio" name="option-${currentQuestionIndex}" value="1" class="left-option">
-                        <div class="option-circle"></div>
-                    </label>
-                    <label class="option-circle-container">
-                        <input type="radio" name="option-${currentQuestionIndex}" value="2" class="left-option">
-                        <div class="option-circle"></div>
-                    </label>
-                    <label class="option-circle-container">
-                        <input type="radio" name="option-${currentQuestionIndex}" value="3" class="right-option">
-                        <div class="option-circle"></div>
-                    </label>
-                    <label class="option-circle-container">
-                        <input type="radio" name="option-${currentQuestionIndex}" value="4" class="right-option">
-                        <div class="option-circle"></div>
-                    </label>
-                </div>
-                <div class="option-text-wrapper right-text">
-                    <span class="option-number">2.</span>
-                    <span class="option-text">${question.rightText}</span>
-                </div>
-            `;
-            
-            // 기존 답변이 있으면 선택 상태 복원
-            if (answers[currentQuestionIndex]) {
-                document.querySelector(`input[name="option-${currentQuestionIndex}"][value="${answers[currentQuestionIndex]}"]`).checked = true;
-                nextBtn.disabled = false;
-            } else {
-                nextBtn.disabled = true;
-            }
-
-            // 라디오 버튼 이벤트 리스너 추가
-            document.querySelectorAll(`input[name="option-${currentQuestionIndex}"]`).forEach(radio => {
-                radio.addEventListener('change', () => {
-                    nextBtn.disabled = false;
-                    answers[currentQuestionIndex] = radio.value;
-                });
-            });
-
-            // 이전/다음 버튼 상태 업데이트
-            prevBtn.disabled = currentQuestionIndex === 0;
-            const progress = (currentQuestionIndex / questions.length) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-
-        // 다음 질문
-        function nextQuestion() {
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                renderQuestion();
-            } else {
-                calculateResult();
-            }
-        }
-
-        // 이전 질문
-        function previousQuestion() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                renderQuestion();
-            }
-        }
-
-        // 결과 계산 및 표시
-        function calculateResult() {
-            showScreen('loading');
-
-            // 1초 뒤 결과 화면 표시 (로딩 효과)
-            setTimeout(() => {
-                score = { 'R': 0, 'S': 0, 'E': 0, 'W': 0, 'D': 0, 'P': 0, 'O': 0, 'F': 0 };
-                
-                for (let i = 0; i < questions.length; i++) {
-                    const question = questions[i];
-                    const answer = parseInt(answers[i]);
-
-                    // 1, 2는 leftType, 3, 4는 rightType에 점수 부여
-                    // 크기가 커짐에 따라 점수를 높게 부여
-                    if (answer === 1) score[question.leftType] += 4;
-                    else if (answer === 2) score[question.leftType] += 2;
-                    else if (answer === 3) score[question.rightType] += 2;
-                    else if (answer === 4) score[question.rightType] += 4;
-                }
-                
-                const typeF = score['R'] > score['S'] ? 'R' : 'S';
-                const typeA = score['E'] > score['W'] ? 'E' : 'W';
-                const typeT = score['D'] > score['P'] ? 'D' : 'P';
-                const typeI = score['O'] > score['F'] ? 'O' : 'F';
-                
-                const finalType = typeF + typeA + typeT + typeI;
-                displayResult(finalType);
-            }, 1000);
-        }
-
-        // 결과 화면 표시
-        function displayResult(finalType) {
-            const resultData = resultTypes[finalType];
-            if (!resultData) {
-                // 결과 데이터가 없을 경우 처리
-                document.getElementById('resultScreen').innerHTML = '결과 데이터를 찾을 수 없습니다.';
-                showScreen('resultScreen');
-                return;
-            }
-
-            document.getElementById('typeEmoji').textContent = resultData.emoji;
-            document.getElementById('typeCode').textContent = finalType;
-            document.getElementById('typeNickname').textContent = resultData.nickname;
-            document.getElementById('typeDescription').textContent = resultData.description;
-            document.getElementById('growthPoint').textContent = resultData.growth;
-            document.getElementById('compatibility').textContent = resultData.compatibility;
-            
-            const traitsListEl = document.getElementById('traitsList');
-            traitsListEl.innerHTML = resultData.traits.map(trait => `<li>${trait}</li>`).join('');
-
-            // 상세 분석 시각화
-            const scoreDetailsEl = document.getElementById('scoreDetails');
-            const totalScoreR_S = score['R'] + score['S'];
-            const totalScoreE_W = score['E'] + score['W'];
-            const totalScoreD_P = score['D'] + score['P'];
-            const totalScoreO_F = score['O'] + score['F'];
-
-            scoreDetailsEl.innerHTML = `
-                <div class="score-row">
-                    <div class="score-labels">
-                        <span class="score-label ${score['R'] > score['S'] ? 'active' : ''}">R (관계)</span>
-                        <span class="score-label ${score['R'] < score['S'] ? 'active' : ''}">S (독립)</span>
-                    </div>
-                    <div class="score-bar-container">
-                        <div class="score-bar-center"></div>
-                        <div class="score-fill-left" style="width: ${totalScoreR_S > 0 ? (score['R'] / totalScoreR_S) * 100 : 50}%;"></div>
-                        <div class="score-fill-right" style="width: ${totalScoreR_S > 0 ? (score['S'] / totalScoreR_S) * 100 : 50}%;"></div>
-                    </div>
-                </div>
-                <div class="score-row">
-                    <div class="score-labels">
-                        <span class="score-label ${score['E'] > score['W'] ? 'active' : ''}">E (감정)</span>
-                        <span class="score-label ${score['E'] < score['W'] ? 'active' : ''}">W (원리)</span>
-                    </div>
-                    <div class="score-bar-container">
-                        <div class="score-bar-center"></div>
-                        <div class="score-fill-left" style="width: ${totalScoreE_W > 0 ? (score['E'] / totalScoreE_W) * 100 : 50}%;"></div>
-                        <div class="score-fill-right" style="width: ${totalScoreE_W > 0 ? (score['W'] / totalScoreE_W) * 100 : 50}%;"></div>
-                    </div>
-                </div>
-                <div class="score-row">
-                    <div class="score-labels">
-                        <span class="score-label ${score['D'] > score['P'] ? 'active' : ''}">D (친밀)</span>
-                        <span class="score-label ${score['D'] < score['P'] ? 'active' : ''}">P (권위)</span>
-                    </div>
-                    <div class="score-bar-container">
-                        <div class="score-bar-center"></div>
-                        <div class="score-fill-left" style="width: ${totalScoreD_P > 0 ? (score['D'] / totalScoreD_P) * 100 : 50}%;"></div>
-                        <div class="score-fill-right" style="width: ${totalScoreD_P > 0 ? (score['P'] / totalScoreD_P) * 100 : 50}%;"></div>
-                    </div>
-                </div>
-                <div class="score-row">
-                    <div class="score-labels">
-                        <span class="score-label ${score['O'] > score['F'] ? 'active' : ''}">O (계획)</span>
-                        <span class="score-label ${score['O'] < score['F'] ? 'active' : ''}">F (유연)</span>
-                    </div>
-                    <div class="score-bar-container">
-                        <div class="score-bar-center"></div>
-                        <div class="score-fill-left" style="width: ${totalScoreO_F > 0 ? (score['O'] / totalScoreO_F) * 100 : 50}%;"></div>
-                        <div class="score-fill-right" style="width: ${totalScoreO_F > 0 ? (score['F'] / totalScoreO_F) * 100 : 50}%;"></div>
-                    </div>
-                </div>
-            `;
-
-            showScreen('resultScreen');
-        }
-
-        // 결과 이미지 다운로드 함수
-        function downloadResultImage() {
-            const resultScreen = document.getElementById('resultScreen');
-            const loading = document.getElementById('loading');
-            loading.style.display = 'flex';
-
-            html2canvas(resultScreen, {
-                scale: 2,
-                backgroundColor: null,
-                useCORS: true
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = `FATI_${document.getElementById('typeCode').textContent}_결과.png`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                loading.style.display = 'none';
-            }).catch(err => {
-                console.error("이미지 다운로드 실패:", err);
-                loading.style.display = 'none';
-                alert('이미지 다운로드에 실패했습니다. 다시 시도해 주세요.');
-            });
-        }
-        
-        // 다시 검사하기
-        function restartTest() {
-            showScreen('startScreen');
-        }
-
-        // 페이지 로드 시 시작 화면 표시
-        window.onload = function() {
-            showScreen('startScreen');
-        };
-    </script>
-</body>
-</html>
+            <p style="margin-top: 15px; color: var(--text-dark);">
